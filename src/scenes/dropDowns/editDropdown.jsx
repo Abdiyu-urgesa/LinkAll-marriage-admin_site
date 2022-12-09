@@ -15,21 +15,43 @@ const EditDropdown = () => {
   const param = useParams();
   const dropdownid = param.id;
   const [dropdown, setDropdowns] = useState({});
-
-  const [formData, setFormData] = useState(dropdown);
-
+  const [formdata, setFormData] = useState([
+    {
+      id: "",
+      field_name: "",
+      field_name_am: "",
+    },
+  ]);
   // const initialValues = {
   //   dropdown_name: dropdown.name,
   //   field_val: dropdown.fields,
   // };
   //  functions
-
+  const striper = (array, indx) => {
+    const x = Object.keys(array);
+    return x[indx];
+  };
   const onchangeHandler = (e) => {
-    setFormData({
-      ...formData,
-      fields: { ...formData.fields, [e.target.name]: e.target.value },
-    });
-    console.log("my for data", formData);
+    // setDropdowns({
+    //   ...dropdown,
+    //   fields: { ...dropdown.fields, [e.target.name]: e.target.value },
+    // });
+    // console.log("my form data", dropdown);
+    console.log(typeof formdata);
+    let x = formdata.findIndex((x) => x._id === e.target.id);
+    console.log(x);
+    if (x !== -1) {
+      setFormData(
+        (formdata[x] = { _id: e.target.id, [e.target.name]: e.target.value })
+      );
+    } else {
+      setFormData({
+        ...formdata,
+        id: e.target.id,
+        [e.target.name]: e.target.value,
+      });
+    }
+    console.log("form data", formdata);
   };
 
   useEffect(() => {
@@ -53,7 +75,7 @@ const EditDropdown = () => {
     //   }
     // });
   };
-  console.log(dropdown);
+  // console.log(dropdown);
   return (
     <Box m="20px">
       <Header title="EDIT Dropdown" subtitle="Edit and Update Dropdowns" />
@@ -80,7 +102,7 @@ const EditDropdown = () => {
           <Typography variant="h5" fontWeight="600" color={colors.grey[100]}>
             Fields
           </Typography>
-          {dropdown.fields?.map((drop) => (
+          {dropdown?.fields?.map((drop) => (
             <Box
               key={drop?._id}
               display="grid"
@@ -91,17 +113,19 @@ const EditDropdown = () => {
                 fullWidth
                 variant="filled"
                 type="string"
+                id={drop?._id}
                 label={drop?.field_name}
                 onChange={onchangeHandler}
-                name={drop?._id}
+                name={striper(drop, 1)}
               />
               <TextField
                 fullWidth
+                id={drop?._id}
                 variant="filled"
                 type="string"
                 label={drop?.field_name_am}
                 onChange={onchangeHandler}
-                name={`${drop?.field_name}_am`}
+                name={striper(drop, 2)}
               />
             </Box>
           ))}

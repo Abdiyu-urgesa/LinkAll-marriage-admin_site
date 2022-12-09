@@ -25,8 +25,8 @@ const Dropdowns = () => {
     });
   }, []);
 
-  const editHandler = (drop_id) => {
-    navigate(`/editdropdown/${drop_id}`);
+  const editHandler = (drop_id, to) => {
+    navigate(`/${to}/${drop_id}`);
   };
 
   const columns = [
@@ -52,14 +52,14 @@ const Dropdowns = () => {
             gap="10px"
           >
             <Button
-              onClick={() => editHandler(params.row._id)}
+              onClick={() => editHandler(params.row._id, "addfield")}
               color="secondary"
               variant="outlined"
             >
               Add Field
             </Button>
             <Button
-              onClick={() => editHandler(params.row._id)}
+              onClick={() => editHandler(params.row._id, "editdropdown")}
               color="secondary"
               variant="outlined"
             >

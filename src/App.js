@@ -19,6 +19,7 @@ import Posts from "./scenes/posts";
 import Dropdowns from "./scenes/dropDowns";
 import Feedback from "./scenes/feedback";
 import EditDropdown from "./scenes/dropDowns/editDropdown";
+import AddField from "./scenes/dropDowns/addField";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -59,6 +60,7 @@ function App() {
 
                   <Route path="/dropdowns" element={<Dropdowns />} />
                   <Route path="/editdropdown/:id" element={<EditDropdown />} />
+                  <Route path="/addfield/:id" element={<AddField />} />
 
                   <Route path="/bar" element={<Bar />} />
                   <Route path="/line" element={<Line />} />
