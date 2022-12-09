@@ -15,17 +15,8 @@ const EditDropdown = () => {
   const param = useParams();
   const dropdownid = param.id;
   const [dropdown, setDropdowns] = useState({});
-  const [formdata, setFormData] = useState([
-    {
-      id: "",
-      field_name: "",
-      field_name_am: "",
-    },
-  ]);
-  // const initialValues = {
-  //   dropdown_name: dropdown.name,
-  //   field_val: dropdown.fields,
-  // };
+  const [dropdowncopy, setDropdownscopy] = useState({});
+
   //  functions
   const striper = (array, indx) => {
     const x = Object.keys(array);
@@ -37,27 +28,24 @@ const EditDropdown = () => {
     //   fields: { ...dropdown.fields, [e.target.name]: e.target.value },
     // });
     // console.log("my form data", dropdown);
-    console.log(typeof formdata);
-    let x = formdata.findIndex((x) => x._id === e.target.id);
-    console.log(x);
-    if (x !== -1) {
-      setFormData(
-        (formdata[x] = { _id: e.target.id, [e.target.name]: e.target.value })
-      );
+
+    var index = dropdown.fields.findIndex((item) => item._id === e.target.id);
+    console.log(index);
+    if (index === -1) {
+      console.log("no found");
     } else {
-      setFormData({
-        ...formdata,
-        id: e.target.id,
-        [e.target.name]: e.target.value,
-      });
+      setDropdownscopy(
+        (dropdowncopy.fields[index] = { [e.target.name]: e.target.value })
+      );
     }
-    console.log("form data", formdata);
+    console.log("wwwww", dropdowncopy);
   };
 
   useEffect(() => {
     get_dropdown_byid(dropdownid).then((res) => {
       if (res.success && res.data) {
         setDropdowns({ ...dropdown, ...res.data });
+        setDropdownscopy({ ...dropdown, ...res.data });
       } else {
         console.log(res.error);
       }
@@ -75,7 +63,7 @@ const EditDropdown = () => {
     //   }
     // });
   };
-  // console.log(dropdown);
+  console.log(dropdown);
   return (
     <Box m="20px">
       <Header title="EDIT Dropdown" subtitle="Edit and Update Dropdowns" />
