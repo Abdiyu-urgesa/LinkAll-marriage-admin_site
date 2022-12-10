@@ -7,7 +7,8 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   get_dropdown_byid,
-  update_user,
+  update_dropdown,
+  update_field,
 } from "../../config/services/api_calls";
 const EditDropdown = () => {
   const theme = useTheme();
@@ -15,6 +16,7 @@ const EditDropdown = () => {
   const param = useParams();
   const dropdownid = param.id;
   const [dropdown, setDropdowns] = useState({});
+  const [dropdownName, setdropdownName] = useState(dropdown.name);
   const [dropdowncopy, setDropdownscopy] = useState({});
 
   //  functions
@@ -22,23 +24,22 @@ const EditDropdown = () => {
     const x = Object.keys(array);
     return x[indx];
   };
-  const onchangeHandler = (e) => {
-    // setDropdowns({
-    //   ...dropdown,
-    //   fields: { ...dropdown.fields, [e.target.name]: e.target.value },
-    // });
-    // console.log("my form data", dropdown);
 
-    var index = dropdown.fields.findIndex((item) => item._id === e.target.id);
+  const onchangeHandler = (e) => {
+    var index = dropdowncopy.fields.findIndex(
+      (item) => item._id === e.target.id
+    );
     console.log(index);
     if (index === -1) {
-      console.log("no found");
+      alert("noting to update");
     } else {
-      setDropdownscopy(
-        (dropdowncopy.fields[index] = { [e.target.name]: e.target.value })
-      );
+      dropdowncopy.fields[index] = {
+        ...dropdowncopy.fields[index],
+        [e.target.name]: e.target.value,
+      };
     }
-    console.log("wwwww", dropdowncopy);
+
+    console.log("wwwww", dropdowncopy, dropdownName);
   };
 
   useEffect(() => {
@@ -52,30 +53,48 @@ const EditDropdown = () => {
     });
   }, []);
 
-  const handleFormSubmit = (values) => {
-    console.log("submitted data", values);
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    for (let i = 0; i < dropdowncopy.fields.length; i++) {
+      delete dropdowncopy.fields[i].__v;
+      delete dropdowncopy.fields[i].createdAt;
+      delete dropdowncopy.fields[i].updatedAt;
+      dropdowncopy.fields[i] = {
+        ...dropdowncopy.fields[i],
+        ["_id"]: dropdownid,
+      };
+    }
 
-    // update_user(values.role, dropdownid).then((res) => {
-    //   if (res.success && res.data) {
-    //     console.log(res.data);
-    //   } else {
-    //     console.log(res.error);
-    //   }
-    // });
+    console.log(dropdowncopy.fields);
+    update_field(dropdowncopy.fields).then((res) => {
+      if (res.success && res.data) {
+        console.log(res.data);
+      } else {
+        console.log(res.error);
+      }
+    });
+
+    update_dropdown(dropdownName, dropdownid).then((res) => {
+      if (res.success && res.data) {
+        console.log(res.data);
+      } else {
+        console.log(res.error);
+      }
+    });
   };
-  console.log(dropdown);
+
   return (
     <Box m="20px">
       <Header title="EDIT Dropdown" subtitle="Edit and Update Dropdowns" />
 
-      <form>
+      <form onSubmit={handleFormSubmit}>
         <Box
           width="100%"
           display="flex"
           flexDirection="column"
           justifyContent="left"
           gap="30px"
-          mt="50px"
+          m="50px 0"
         >
           <Typography variant="h5" fontWeight="600" color={colors.grey[100]}>
             Dropdown name
@@ -84,8 +103,9 @@ const EditDropdown = () => {
             fullWidth
             variant="filled"
             type="string"
+            label={dropdown.name}
             name={dropdown?.name}
-            onChange={onchangeHandler}
+            onChange={(event) => setdropdownName(event.target.value)}
           />
           <Typography variant="h5" fontWeight="600" color={colors.grey[100]}>
             Fields
@@ -94,7 +114,7 @@ const EditDropdown = () => {
             <Box
               key={drop?._id}
               display="grid"
-              gridTemplateColumns="1fr 1fr"
+              gridTemplateColumns="1fr 1fr 0.4fr"
               gap="30px"
             >
               <TextField
@@ -115,6 +135,9 @@ const EditDropdown = () => {
                 onChange={onchangeHandler}
                 name={striper(drop, 2)}
               />
+              <Button color="error" variant="outlined">
+                Delete Field
+              </Button>
             </Box>
           ))}
 

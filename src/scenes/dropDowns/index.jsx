@@ -4,15 +4,21 @@ import { tokens } from "../../theme";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Header from "../../components/Header";
 import { useEffect } from "react";
-import { fetchdropdowns } from "../../config/services/api_calls";
+
+import {
+  fetchdropdowns,
+  delete_dropdown,
+} from "../../config/services/api_calls";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Dropdowns = () => {
   // variable definations
   const navigate = useNavigate();
+
   const [users, setUsers] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [change, setchange] = useState(true);
 
   // functions
   useEffect(() => {
@@ -23,10 +29,20 @@ const Dropdowns = () => {
         console.log(res.error);
       }
     });
-  }, []);
+  }, [change]);
 
-  const editHandler = (drop_id, to) => {
+  const manageBtnHandler = (drop_id, to) => {
     navigate(`/${to}/${drop_id}`);
+  };
+
+  const deleteDropdownHandler = (dropdown_id) => {
+    delete_dropdown(dropdown_id).then((res) => {
+      if (res.success && res.data) {
+      } else {
+        console.log(res.error);
+      }
+    });
+    navigate(0);
   };
 
   const columns = [
@@ -52,21 +68,21 @@ const Dropdowns = () => {
             gap="10px"
           >
             <Button
-              onClick={() => editHandler(params.row._id, "addfield")}
+              onClick={() => manageBtnHandler(params.row._id, "addfield")}
               color="secondary"
               variant="outlined"
             >
               Add Field
             </Button>
             <Button
-              onClick={() => editHandler(params.row._id, "editdropdown")}
+              onClick={() => manageBtnHandler(params.row._id, "editdropdown")}
               color="secondary"
               variant="outlined"
             >
               Edit
             </Button>
             <Button
-              onClick={() => editHandler(params.row._id)}
+              onClick={() => deleteDropdownHandler(params.row._id)}
               color="error"
               variant="outlined"
             >
@@ -83,6 +99,9 @@ const Dropdowns = () => {
       <Header title="Users" subtitle="Managing the App Users" />
       <Box width="100%">
         <Button
+          onClick={() => {
+            navigate("/addDropdown");
+          }}
           sx={{
             backgroundColor: colors.blueAccent[700],
             color: colors.grey[100],

@@ -1,21 +1,16 @@
 import { Box, Button, TextField } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
-import { add_dropdown_field } from "../../config/services/api_calls";
+import { create_dropdown } from "../../config/services/api_calls";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 import Header from "../../components/Header";
-const AddField = () => {
+const AddDropdown = () => {
   const navigate = useNavigate();
-  const param = useParams();
-  const dropdownid = param.id;
+
   const handleFormSubmit = (values) => {
-    add_dropdown_field(
-      values.field_name,
-      values.field_name_am,
-      dropdownid
-    ).then((res) => {
+    create_dropdown(values.dropdown_name).then((res) => {
       if (res.success && res.data) {
         navigate("/dropdowns");
       } else {
@@ -25,17 +20,15 @@ const AddField = () => {
   };
 
   const checkoutSchema = yup.object().shape({
-    field_name: yup.string().required("required"),
-    field_name_am: yup.string().required("required"),
+    dropdown_name: yup.string().required("required"),
   });
   const initialValues = {
-    field_name: "",
-    field_name_am: "",
+    dropdown_name: "",
   };
 
   return (
     <Box m="20vh">
-      <Header title="Add field" subtitle="Add fields to a dropdown" />
+      <Header title="Add Dropdown" subtitle="Add Dropdown to a dropdown List" />
       <Formik
         onSubmit={(values) => {
           handleFormSubmit(values);
@@ -57,26 +50,13 @@ const AddField = () => {
                 fullWidth
                 variant="filled"
                 type="string"
-                label="Field Name English"
+                label="DropDown Name "
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.field_name}
-                name="field_name"
-                error={!!touched.field_name && !!errors.field_name}
-                helperText={touched.field_name && errors.field_name}
-              />
-
-              <TextField
-                fullWidth
-                variant="filled"
-                type="string"
-                label="Field Name Amharic"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.field_name_am}
-                name="field_name_am"
-                error={!!touched.field_name_am && !!errors.field_name_am}
-                helperText={touched.field_name_am && errors.field_name_am}
+                value={values.dropdown_name}
+                name="dropdown_name"
+                error={!!touched.dropdown_name && !!errors.dropdown_name}
+                helperText={touched.dropdown_name && errors.dropdown_name}
               />
 
               <Button type="submit" color="secondary" variant="contained">
@@ -90,4 +70,4 @@ const AddField = () => {
   );
 };
 
-export default AddField;
+export default AddDropdown;
