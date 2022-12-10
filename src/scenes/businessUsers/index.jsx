@@ -6,7 +6,11 @@ import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Header from "../../components/Header";
 import { useEffect } from "react";
-import { get_all_business_users } from "../../config/services/api_calls";
+import {
+  get_all_business_users,
+  deactivate_user,
+  delete_user,
+} from "../../config/services/api_calls";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Business = () => {
@@ -27,11 +31,27 @@ const Business = () => {
     });
   }, []);
 
-  const editHandler = (u_id) => {
-    var user = users.filter((user) => {
-      return user._id === u_id;
+  const deleteHandler = (USERID) => {
+    delete_user(USERID).then((res) => {
+      console.log(res.data);
+      if (res.success && res.data) {
+        alert(res.data.message);
+      } else {
+        console.log(res.error);
+      }
     });
-    navigate(`/edituser/${u_id}`);
+    // navigate(0);
+  };
+
+  const deactivateHandler = (USERID) => {
+    deactivate_user(USERID).then((res) => {
+      if (res.success && res.data) {
+        alert(res.data.message);
+      } else {
+        console.log(res.error);
+      }
+    });
+    // navigate(0);
   };
 
   const columns = [
@@ -81,17 +101,24 @@ const Business = () => {
       renderCell: (params) => {
         return (
           <Box
-            width="60%"
             display="flex"
             justifyContent="center"
             alignItems="center"
+            gap="10px"
           >
             <Button
-              onClick={() => editHandler(params.row._id)}
-              color="primary"
-              variant="contained"
+              onClick={() => deactivateHandler(params.row._id)}
+              color="secondary"
+              variant="outlined"
             >
-              Edit
+              Deactivate
+            </Button>
+            <Button
+              onClick={() => deleteHandler(params.row._id)}
+              color="error"
+              variant="outlined"
+            >
+              Delete
             </Button>
           </Box>
         );

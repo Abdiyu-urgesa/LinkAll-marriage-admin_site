@@ -107,6 +107,37 @@ export const update_user = async (role, USERID) => {
   }
 };
 
+export const delete_user = async (USERID) => {
+  try {
+    const response = await api.delete(`/api/auth-admin/admin/delete/${USERID}`);
+    return { success: true, data: response.data };
+  } catch (err) {
+    if (err.response) {
+      console.log(err.response.data);
+      return { success: false, data: null, error: err.message };
+    } else {
+      console.log(`Error: ${err.message}`);
+    }
+  }
+};
+
+export const deactivate_user = async (USERID) => {
+  try {
+    const response = await api.put(
+      `/api/auth-admin/admin/deactivate/${USERID}`
+    );
+
+    return { success: true, data: response.data };
+  } catch (err) {
+    if (err.response) {
+      console.log(err.response.data);
+      return { success: false, data: null, error: err.message };
+    } else {
+      console.log(`Error: ${err.message}`);
+    }
+  }
+};
+
 export const fetchdropdowns = async () => {
   try {
     const response = await api.get("/api/dropdown/all");

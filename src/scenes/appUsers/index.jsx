@@ -5,7 +5,11 @@ import CheckBoxRoundedIcon from "@mui/icons-material/CheckBoxRounded";
 import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined";
 import Header from "../../components/Header";
 import { useEffect } from "react";
-import { get_all_users } from "../../config/services/api_calls";
+import {
+  get_all_users,
+  deactivate_user,
+  delete_user,
+} from "../../config/services/api_calls";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const AppUsers = () => {
@@ -26,11 +30,27 @@ const AppUsers = () => {
     });
   }, []);
 
-  const editHandler = (u_id) => {
-    var user = users.filter((user) => {
-      return user._id === u_id;
+  const deleteHandler = (USERID) => {
+    delete_user(USERID).then((res) => {
+      console.log(res.data);
+      if (res.success && res.data) {
+        alert(res.data.message);
+      } else {
+        console.log(res.error);
+      }
     });
-    navigate(`/edituser/${u_id}`);
+    // navigate(0);
+  };
+
+  const deactivateHandler = (USERID) => {
+    deactivate_user(USERID).then((res) => {
+      if (res.success && res.data) {
+        alert(res.data.message);
+      } else {
+        console.log(res.error);
+      }
+    });
+    // navigate(0);
   };
 
   const columns = [
@@ -119,14 +139,14 @@ const AppUsers = () => {
             gap="10px"
           >
             <Button
-              onClick={() => editHandler(params.row._id)}
+              onClick={() => deactivateHandler(params.row._id)}
               color="secondary"
               variant="outlined"
             >
-              Edit
+              Deactivate
             </Button>
             <Button
-              onClick={() => editHandler(params.row._id)}
+              onClick={() => deleteHandler(params.row._id)}
               color="error"
               variant="outlined"
             >
