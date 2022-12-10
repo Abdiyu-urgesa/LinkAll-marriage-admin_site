@@ -21,13 +21,14 @@ import Feedback from "./scenes/feedback";
 import EditDropdown from "./scenes/dropDowns/editDropdown";
 import AddField from "./scenes/dropDowns/addField";
 import AddDropdown from "./scenes/dropDowns/addDropdown";
+import LoadingBar from "react-top-loading-bar";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   const authCtx = useContext(AuthContext);
   const location = useLocation();
   const [showside, setshowside] = useState(true);
-
+  const [progress, setProgress] = useState(0);
   useEffect(() => {
     if (location.pathname === "/" || location.pathname.includes("/otp")) {
       setshowside(false);
@@ -40,6 +41,13 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        <LoadingBar
+          color="#f11946"
+          progress={progress}
+          loaderSpeed={1000}
+          height={3}
+          onLoaderFinished={() => setProgress(0)}
+        />
         <div className="app">
           {showside && authCtx.isLoggedIn && <Sidebar isSidebar={isSidebar} />}
           <main className="content">
@@ -47,7 +55,7 @@ function App() {
               <Topbar setIsSidebar={setIsSidebar} />
             )}
             <Routes>
-              <Route path="/" element={<SignIn />} />
+              <Route path="/" element={<SignIn isloading={setProgress} />} />
               <Route path="/otp/:id" element={<OtpLogin />} />
               {authCtx.isLoggedIn && (
                 <>

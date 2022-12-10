@@ -153,10 +153,8 @@ export const update_dropdown = async (dropdown_name, dropdown_id) => {
 };
 
 export const update_field = async (field_obj) => {
-  console.log("gfdfffggg", field_obj);
   try {
     const response = await api.put("/api/Dropdown/update-fields", field_obj);
-
     return { success: true, data: response.data };
   } catch (err) {
     if (err.response) {
@@ -210,6 +208,20 @@ export const delete_dropdown = async (dropdown_id) => {
   try {
     const response = await api.delete(`/api/DropDown/delete/${dropdown_id}`);
 
+    return { success: true, data: response.data };
+  } catch (err) {
+    if (err.response) {
+      console.log(err.response.data);
+      return { success: false, data: null, error: err.message };
+    } else {
+      console.log(`Error: ${err.message}`);
+    }
+  }
+};
+
+export const delete_field = async (field_id) => {
+  try {
+    const response = await api.delete(`/api/DropDown/delete-field/${field_id}`);
     return { success: true, data: response.data };
   } catch (err) {
     if (err.response) {

@@ -4,11 +4,11 @@ import * as yup from "yup";
 import { login_with_otp } from "../../config/services/api_calls";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-const SignIn = () => {
+const SignIn = (props) => {
   const navigate = useNavigate();
-  const [isloading, setisloading] = useState(false);
+
   const handleFormSubmit = (values) => {
-    setisloading(true);
+    props.isloading(10);
     login_with_otp(values.phone).then((res) => {
       if (res.success && res.data) {
         navigate(`otp/${res.data.data.user_id}`);
@@ -16,7 +16,7 @@ const SignIn = () => {
         console.log(res.error);
       }
     });
-    setisloading(false);
+    props.isloading(100);
   };
 
   const checkoutSchema = yup.object().shape({
@@ -33,7 +33,7 @@ const SignIn = () => {
           alt="profile-user"
           width="200px"
           height="200px"
-          src={`../../assets/logo.png`}
+          src={"../../assets/logo.png"}
           style={{
             cursor: "pointer",
             borderRadius: "50%",
@@ -71,12 +71,7 @@ const SignIn = () => {
                 helperText={touched.phone && errors.phone}
               />
 
-              <Button
-                disabled={isloading}
-                type="submit"
-                color="secondary"
-                variant="contained"
-              >
+              <Button type="submit" color="secondary" variant="contained">
                 submit
               </Button>
             </Box>

@@ -49,7 +49,7 @@ const Dropdowns = () => {
     {
       field: "name",
       headerName: "Dropdown Name",
-      type: "text",
+      type: "string",
       flex: 2,
     },
     { field: "createdAt", headerName: "Created At", flex: 2 },
