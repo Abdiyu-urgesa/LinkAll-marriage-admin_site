@@ -90,10 +90,13 @@ export const get_user_byid = async (user_id) => {
     }
   }
 };
-export const update_user = async (role, USERID) => {
+export const update_user = async (values, USERID) => {
   try {
     const response = await api.put(`/api/auth-admin/admin/update/${USERID}`, {
-      user_type: role,
+      user_type: values.role,
+      age: values.age,
+      phone_number: values.phone,
+      code_name: values.code_name,
     });
 
     return { success: true, data: response.data };
@@ -126,6 +129,26 @@ export const deactivate_user = async (USERID) => {
     const response = await api.put(
       `/api/auth-admin/admin/deactivate/${USERID}`
     );
+
+    return { success: true, data: response.data };
+  } catch (err) {
+    if (err.response) {
+      console.log(err.response.data);
+      return { success: false, data: null, error: err.message };
+    } else {
+      console.log(`Error: ${err.message}`);
+    }
+  }
+};
+
+export const create_admin = async (name, phone, age, role) => {
+  try {
+    const response = await api.post("/api/auth-admin/create", {
+      code_name: name,
+      phone_number: phone,
+      age: age,
+      user_type: role,
+    });
 
     return { success: true, data: response.data };
   } catch (err) {

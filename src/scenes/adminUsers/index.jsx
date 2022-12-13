@@ -6,7 +6,11 @@ import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Header from "../../components/Header";
 import { useEffect } from "react";
-import { get_all_admin_users } from "../../config/services/api_calls";
+import {
+  get_all_admin_users,
+  deactivate_user,
+  delete_user,
+} from "../../config/services/api_calls";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const AdminUsers = () => {
@@ -27,11 +31,31 @@ const AdminUsers = () => {
     });
   }, []);
 
-  const editHandler = (u_id) => {
-    var user = users.filter((user) => {
-      return user._id === u_id;
+  const manageBtnHandler = (drop_id, to) => {
+    navigate(`/${to}/${drop_id}`);
+  };
+
+  const deleteHandler = (USERID) => {
+    delete_user(USERID).then((res) => {
+      console.log(res.data);
+      if (res.success && res.data) {
+        alert(res.data.message);
+      } else {
+        console.log(res.error);
+      }
     });
-    navigate(`/edituser/${u_id}`);
+    // navigate(0);
+  };
+
+  const deactivateHandler = (USERID) => {
+    deactivate_user(USERID).then((res) => {
+      if (res.success && res.data) {
+        alert(res.data.message);
+      } else {
+        console.log(res.error);
+      }
+    });
+    // navigate(0);
   };
 
   const columns = [
@@ -55,7 +79,6 @@ const AdminUsers = () => {
       headerAlign: "left",
       align: "left",
     },
-    { field: "user_type", headerName: "Type" },
     {
       field: "is_active",
       headerName: "Is Active",
@@ -81,17 +104,31 @@ const AdminUsers = () => {
       renderCell: (params) => {
         return (
           <Box
-            width="60%"
             display="flex"
             justifyContent="center"
             alignItems="center"
+            gap="10px"
           >
             <Button
-              onClick={() => editHandler(params.row._id)}
-              color="primary"
-              variant="contained"
+              onClick={() => manageBtnHandler(params.row._id, "edituser")}
+              color="secondary"
+              variant="outlined"
             >
               Edit
+            </Button>
+            <Button
+              onClick={() => deactivateHandler(params.row._id)}
+              color="secondary"
+              variant="outlined"
+            >
+              Deactivate
+            </Button>
+            <Button
+              onClick={() => deleteHandler(params.row._id)}
+              color="error"
+              variant="outlined"
+            >
+              Delete
             </Button>
           </Box>
         );
@@ -105,6 +142,9 @@ const AdminUsers = () => {
 
       <Box width="100%">
         <Button
+          onClick={() => {
+            navigate("/createadmin");
+          }}
           sx={{
             backgroundColor: colors.blueAccent[700],
             color: colors.grey[100],

@@ -1,36 +1,35 @@
 import { Box, Button, TextField } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
-import { add_dropdown_field } from "../../config/services/api_calls";
+import { create_admin } from "../../config/services/api_calls";
 import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
 
 import Header from "../../components/Header";
-const AddField = () => {
+const CreateAdminUser = () => {
   const navigate = useNavigate();
-  const param = useParams();
-  const dropdownid = param.id;
+
   const handleFormSubmit = (values) => {
-    add_dropdown_field(
-      values.field_name,
-      values.field_name_am,
-      dropdownid
-    ).then((res) => {
-      if (res.success && res.data) {
-        navigate("/dropdowns");
-      } else {
-        console.log(res.error);
+    create_admin(values.code_name, values.phone, values.age, "ADMIN").then(
+      (res) => {
+        if (res.success && res.data) {
+          alert(res.data.message);
+          navigate("/businessusers");
+        } else {
+          console.log(res.error);
+        }
       }
-    });
+    );
   };
 
   const checkoutSchema = yup.object().shape({
-    field_name: yup.string().required("required"),
-    field_name_am: yup.string().required("required"),
+    code_name: yup.string().required("required"),
+    phone: yup.string().required("required"),
+    age: yup.number().required("required"),
   });
   const initialValues = {
-    field_name: "",
-    field_name_am: "",
+    code_name: "",
+    phone: "",
+    age: "",
   };
 
   return (
@@ -41,7 +40,7 @@ const AddField = () => {
       flexDirection="column"
       justifyContent="center"
     >
-      <Header title="Add field" subtitle="Add fields to a dropdown" />
+      <Header title="Add Admin" subtitle="Add Admin User To Users List" />
       <Formik
         onSubmit={(values) => {
           handleFormSubmit(values);
@@ -63,26 +62,38 @@ const AddField = () => {
                 fullWidth
                 variant="filled"
                 type="string"
-                label="Field Name English"
+                label="Code Name"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.field_name}
-                name="field_name"
-                error={!!touched.field_name && !!errors.field_name}
-                helperText={touched.field_name && errors.field_name}
+                value={values.code_name}
+                name="code_name"
+                error={!!touched.code_name && !!errors.code_name}
+                helperText={touched.code_name && errors.code_name}
               />
 
               <TextField
                 fullWidth
                 variant="filled"
-                type="string"
-                label="Field Name Amharic"
+                type="number"
+                label="Age"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.field_name_am}
-                name="field_name_am"
-                error={!!touched.field_name_am && !!errors.field_name_am}
-                helperText={touched.field_name_am && errors.field_name_am}
+                value={values.age}
+                name="age"
+                error={!!touched.age && !!errors.age}
+                helperText={touched.age && errors.age}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="string"
+                label="Phone Number"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.phone}
+                name="phone"
+                error={!!touched.phone && !!errors.phone}
+                helperText={touched.phone && errors.phone}
               />
 
               <Button type="submit" color="secondary" variant="contained">
@@ -96,4 +107,4 @@ const AddField = () => {
   );
 };
 
-export default AddField;
+export default CreateAdminUser;

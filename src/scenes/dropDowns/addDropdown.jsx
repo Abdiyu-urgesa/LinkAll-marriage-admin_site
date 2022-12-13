@@ -27,7 +27,13 @@ const AddDropdown = () => {
   };
 
   return (
-    <Box m="20vh">
+    <Box
+      m="20vh auto"
+      width="500px"
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+    >
       <Header title="Add Dropdown" subtitle="Add Dropdown to a dropdown List" />
       <Formik
         onSubmit={(values) => {
@@ -39,7 +45,7 @@ const AddDropdown = () => {
         {({ values, errors, touched, handleBlur, handleChange }) => (
           <Form>
             <Box
-              width="300px"
+              width="500px"
               display="flex"
               flexDirection="column"
               justifyContent="center"

@@ -22,6 +22,8 @@ import EditDropdown from "./scenes/dropDowns/editDropdown";
 import AddField from "./scenes/dropDowns/addField";
 import AddDropdown from "./scenes/dropDowns/addDropdown";
 import LoadingBar from "react-top-loading-bar";
+import CreateBusinessUser from "./scenes/businessUsers/createBusinessUser";
+import CreateAdminUser from "./scenes/adminUsers/createAdminUser";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -42,9 +44,8 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <LoadingBar
-          color="#f11946"
+          color="#1cbe8e"
           progress={progress}
-          loaderSpeed={1000}
           height={3}
           onLoaderFinished={() => setProgress(0)}
         />
@@ -62,6 +63,11 @@ function App() {
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/users" element={<AppUsers />} />
                   <Route path="/businessusers" element={<Business />} />
+                  <Route
+                    path="/createbusiness"
+                    element={<CreateBusinessUser />}
+                  />
+                  <Route path="/createadmin" element={<CreateAdminUser />} />
                   <Route path="/adminusers" element={<AdminUsers />} />
                   <Route path="/edituser/:id" element={<EditUser />} />
 

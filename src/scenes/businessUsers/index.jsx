@@ -31,6 +31,10 @@ const Business = () => {
     });
   }, []);
 
+  const manageBtnHandler = (drop_id, to) => {
+    navigate(`/${to}/${drop_id}`);
+  };
+
   const deleteHandler = (USERID) => {
     delete_user(USERID).then((res) => {
       console.log(res.data);
@@ -75,7 +79,7 @@ const Business = () => {
       headerAlign: "left",
       align: "left",
     },
-    { field: "user_type", headerName: "Type" },
+
     {
       field: "is_active",
       headerName: "Is Active",
@@ -96,8 +100,8 @@ const Business = () => {
     { field: "createdAt", headerName: "Created At" },
     {
       field: "_id",
-      headerName: "ID",
-      flex: 1,
+      headerName: "Manage",
+      flex: 2,
       renderCell: (params) => {
         return (
           <Box
@@ -106,6 +110,13 @@ const Business = () => {
             alignItems="center"
             gap="10px"
           >
+            <Button
+              onClick={() => manageBtnHandler(params.row._id, "edituser")}
+              color="secondary"
+              variant="outlined"
+            >
+              Edit
+            </Button>
             <Button
               onClick={() => deactivateHandler(params.row._id)}
               color="secondary"
@@ -135,6 +146,9 @@ const Business = () => {
 
       <Box width="100%">
         <Button
+          onClick={() => {
+            navigate("/createbusiness");
+          }}
           sx={{
             backgroundColor: colors.blueAccent[700],
             color: colors.grey[100],

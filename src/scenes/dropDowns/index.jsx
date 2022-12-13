@@ -58,7 +58,7 @@ const Dropdowns = () => {
     {
       field: "_id",
       headerName: "Manage",
-      flex: 2.5,
+      flex: 2,
       renderCell: (params) => {
         return (
           <Box
@@ -96,7 +96,7 @@ const Dropdowns = () => {
 
   return (
     <Box m="20px">
-      <Header title="Users" subtitle="Managing the App Users" />
+      <Header title="Dropdowns" subtitle="Managing the App Dropdowns" />
       <Box width="100%">
         <Button
           onClick={() => {

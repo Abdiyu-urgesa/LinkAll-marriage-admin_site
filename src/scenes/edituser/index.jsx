@@ -5,7 +5,10 @@ import {
   FormControl,
   Select,
   InputLabel,
+  TextField,
 } from "@mui/material";
+
+import * as yup from "yup";
 import { Form, Formik } from "formik";
 import Header from "../../components/Header";
 import { useParams } from "react-router-dom";
@@ -17,7 +20,16 @@ const EditUser = () => {
   const [userData, setUserData] = useState({});
   const initialValues = {
     role: "",
+    age: "",
+    code_name: "",
+    phone: "",
   };
+  const checkoutSchema = yup.object().shape({
+    age: yup.string().required("required"),
+    code_name: yup.string().required("required"),
+    phone: yup.string().required("required"),
+    role: yup.string().required("required"),
+  });
   //  functions
 
   useEffect(() => {
@@ -31,7 +43,7 @@ const EditUser = () => {
   }, []);
 
   const handleFormSubmit = (values) => {
-    update_user(values.role, userid).then((res) => {
+    update_user(values, userid).then((res) => {
       if (res.success && res.data) {
         console.log(res.data);
       } else {
@@ -48,17 +60,18 @@ const EditUser = () => {
         onSubmit={(values) => {
           handleFormSubmit(values);
         }}
+        enableReinitialize={true}
         initialValues={initialValues}
+        validationSchema={checkoutSchema}
       >
-        {({ values, handleBlur, handleChange }) => (
+        {({ values, errors, touched, handleBlur, handleChange }) => (
           <Form>
             <Box
-              width="300px"
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
+              margin="10% 0%"
+              width="100%"
+              display="grid"
+              gridTemplateColumns="1fr 1fr"
               gap="30px"
-              margin="10% auto"
             >
               <FormControl fullWidth>
                 <InputLabel id="role">Role Of User</InputLabel>
@@ -77,13 +90,56 @@ const EditUser = () => {
                   <MenuItem value="BUSSINES_ACCOUNT">BUSINESS ACCOUNT</MenuItem>
                 </Select>
               </FormControl>
-              <Button color="error" variant="contained">
-                Deactivate User
-              </Button>
-              <Button type="submit" color="secondary" variant="contained">
-                submit
-              </Button>
+
+              <TextField
+                fullWidth
+                variant="filled"
+                type="string"
+                label="Age"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.age}
+                name="age"
+                error={!!touched.age && !!errors.age}
+                helperText={touched.age && errors.age}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="string"
+                label="Code Name"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.code_name}
+                name="code_name"
+                error={!!touched.code_name && !!errors.code_name}
+                helperText={touched.code_name && errors.code_name}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="string"
+                label="Phone Number"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.phone}
+                name="phone"
+                error={!!touched.phone && !!errors.phone}
+                helperText={touched.phone && errors.phone}
+              />
             </Box>
+            <Button
+              type="submit"
+              color="secondary"
+              variant="contained"
+              sx={{
+                display: "block",
+                width: "50%",
+                margin: "30px auto",
+              }}
+            >
+              submit
+            </Button>
           </Form>
         )}
       </Formik>
