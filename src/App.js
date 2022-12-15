@@ -24,6 +24,13 @@ import AddDropdown from "./scenes/dropDowns/addDropdown";
 import LoadingBar from "react-top-loading-bar";
 import CreateBusinessUser from "./scenes/businessUsers/createBusinessUser";
 import CreateAdminUser from "./scenes/adminUsers/createAdminUser";
+import Catagories from "./scenes/posts/catagories";
+import Tags from "./scenes/posts/tags";
+import CreatCatagory from "./scenes/posts/catagories/createCatagory";
+import EditCatagory from "./scenes/posts/catagories/editCatagory";
+import EditTag from "./scenes/posts/tags/editTag";
+import CreatTag from "./scenes/posts/tags/createTag";
+import CreatPost from "./scenes/posts/createPost";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -72,6 +79,13 @@ function App() {
                   <Route path="/edituser/:id" element={<EditUser />} />
 
                   <Route path="/posts" element={<Posts />} />
+                  <Route path="/createposts" element={<CreatPost />} />
+                  <Route path="/catagories" element={<Catagories />} />
+                  <Route path="/createcatagory" element={<CreatCatagory />} />
+                  <Route path="/editcatagory/:id" element={<EditCatagory />} />
+                  <Route path="/tags" element={<Tags />} />
+                  <Route path="/creattags" element={<CreatTag />} />
+                  <Route path="/edittag/:id" element={<EditTag />} />
 
                   <Route path="/dropdowns" element={<Dropdowns />} />
                   <Route path="/addDropdown" element={<AddDropdown />} />

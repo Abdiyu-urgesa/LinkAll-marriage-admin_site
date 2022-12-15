@@ -1,40 +1,36 @@
-import { Box, Button, useTheme } from "@mui/material";
+import { Avatar, Box, Button, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { tokens } from "../../theme";
-import CheckBoxRoundedIcon from "@mui/icons-material/CheckBoxRounded";
-import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import Header from "../../components/Header";
+import { tokens } from "../../../theme";
+import Header from "../../../components/Header";
 import { useEffect } from "react";
-import { fetchPosts, delete_post } from "../../config/services/api_calls";
+import {
+  get_catagory,
+  update_catagory,
+  delete_catagory,
+} from "../../../config/services/api_calls";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-const Posts = () => {
+const Catagories = () => {
   // variable definations
   const navigate = useNavigate();
-  const [posts, setPosts] = useState([]);
+  const [catagory, setCatagory] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   // functions
   useEffect(() => {
-    fetchPosts().then((res) => {
+    get_catagory().then((res) => {
       if (res.success && res.data) {
-        setPosts(res.data.posts);
+        setCatagory(res.data);
       } else {
         console.log(res.error);
       }
     });
   }, []);
 
-  const editHandler = (u_id) => {
-    // var user = users.filter((user) => {
-    //   return user._id === u_id;
-    // });
-    navigate(`/edituser/${u_id}`);
-  };
-  const deleteHandler = (postID) => {
-    delete_post(postID).then((res) => {
+  const deleteHandler = (catagoryID) => {
+    delete_catagory(catagoryID).then((res) => {
       console.log(res.data);
       if (res.success && res.data) {
         alert(res.data.message);
@@ -45,32 +41,29 @@ const Posts = () => {
     // navigate(0);
   };
 
+  const EditHandler = (catagoryID) => {
+    navigate(`/editcatagory/${catagoryID}`);
+  };
+
   const columns = [
     {
-      field: "title",
-      headerName: "Title",
+      field: "category",
+      headerName: "Catagory Name",
       cellClassName: "name-column--cell",
       flex: 2,
     },
-    { field: "description", headerName: "Description", flex: 2 },
     {
-      field: "is_approved",
-      headerName: "Approved",
-      renderCell: (params) => {
-        return (
-          <Box display="flex" justifyContent="center" alignItems="center">
-            {params.row.is_approved === true && <CheckBoxRoundedIcon />}
-            {params.row.is_approved === false && <DangerousOutlinedIcon />}
-          </Box>
-        );
-      },
+      field: "category_am",
+      headerName: "Catagory Name Am",
+      flex: 2,
     },
+
     { field: "updatedAt", headerName: "Updated At" },
     { field: "createdAt", headerName: "Created At" },
     {
       field: "_id",
       headerName: "Manage",
-      flex: 1,
+      flex: 2,
       renderCell: (params) => {
         return (
           <Box
@@ -80,11 +73,11 @@ const Posts = () => {
             gap="10px"
           >
             <Button
-              // onClick={() => deactivateHandler(params.row._id)}
+              onClick={() => EditHandler(params.row._id)}
               color="secondary"
               variant="outlined"
             >
-              Update
+              Edit
             </Button>
             <Button
               onClick={() => deleteHandler(params.row._id)}
@@ -101,12 +94,11 @@ const Posts = () => {
 
   return (
     <Box m="20px">
-      <Header title="Posts" subtitle="create and update app posts" />
-
+      <Header title="Catagories" subtitle="Managing the post catagories" />
       <Box width="100%">
         <Button
           onClick={() => {
-            navigate("/createposts");
+            navigate("/createcatagory");
           }}
           sx={{
             backgroundColor: colors.blueAccent[700],
@@ -119,7 +111,7 @@ const Posts = () => {
           }}
         >
           <AddOutlinedIcon sx={{ mr: "10px" }} />
-          Create Post
+          Create Catagory
         </Button>
       </Box>
       <Box
@@ -156,7 +148,7 @@ const Posts = () => {
       >
         <DataGrid
           // checkboxSelection
-          rows={posts}
+          rows={catagory}
           getRowId={(row) => row._id}
           columns={columns}
           components={{ Toolbar: GridToolbar }}
@@ -166,4 +158,4 @@ const Posts = () => {
   );
 };
 
-export default Posts;
+export default Catagories;
