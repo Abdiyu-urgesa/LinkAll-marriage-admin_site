@@ -55,10 +55,10 @@ const CreatPost = () => {
   const handleFormSubmit = (values) => {
     const fd = new FormData();
     fd.append("thumbnail", file);
-    fd.append("title_am", values.title);
+    fd.append("title", values.title);
     fd.append("description", values.description);
     fd.append("tags", values.tags);
-    fd.append("post_category", values.tags);
+    fd.append("post_category", values.post_category);
     fd.append("video_link", values.video_link);
     fd.append("title_am", values.title_am);
     fd.append("description_am", values.description_am);
