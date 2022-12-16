@@ -4,24 +4,46 @@ import * as yup from "yup";
 import { add_dropdown_field } from "../../config/services/api_calls";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-
+import SimpleSnackbar from "../global/snackbar";
 import Header from "../../components/Header";
-const AddField = () => {
+import { useState } from "react";
+const AddField = (props) => {
   const navigate = useNavigate();
   const param = useParams();
   const dropdownid = param.id;
+  const [snak, setsnak] = useState({
+    severity: "",
+    message: "",
+    open: false,
+  });
+  // functions
+  const handleClose = () => {
+    setsnak({
+      open: false,
+      severity: "",
+      message: "",
+    });
+  };
   const handleFormSubmit = (values) => {
+    props.isloading(10);
     add_dropdown_field(
       values.field_name,
       values.field_name_am,
       dropdownid
     ).then((res) => {
       if (res.success && res.data) {
+        setsnak({ severity: "success", message: res.data.message, open: true });
         navigate("/dropdowns");
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
     });
+    props.isloading(100);
   };
 
   const checkoutSchema = yup.object().shape({
@@ -41,6 +63,12 @@ const AddField = () => {
       flexDirection="column"
       justifyContent="center"
     >
+      <SimpleSnackbar
+        open={snak.open}
+        severity={snak.severity}
+        onClose={handleClose}
+        message={snak.message}
+      />
       <Header title="Add field" subtitle="Add fields to a dropdown" />
       <Formik
         onSubmit={(values) => {

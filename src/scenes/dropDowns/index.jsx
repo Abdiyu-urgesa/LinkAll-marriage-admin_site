@@ -4,17 +4,21 @@ import { tokens } from "../../theme";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Header from "../../components/Header";
 import { useEffect } from "react";
-
+import SimpleSnackbar from "../global/snackbar";
 import {
   fetchdropdowns,
   delete_dropdown,
 } from "../../config/services/api_calls";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-const Dropdowns = () => {
+const Dropdowns = (props) => {
   // variable definations
   const navigate = useNavigate();
-
+  const [snak, setsnak] = useState({
+    severity: "",
+    message: "",
+    open: false,
+  });
   const [users, setUsers] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -30,18 +34,33 @@ const Dropdowns = () => {
       }
     });
   }, [change]);
+  const handleClose = () => {
+    setsnak({
+      open: false,
+      severity: "",
+      message: "",
+    });
+  };
 
   const manageBtnHandler = (drop_id, to) => {
     navigate(`/${to}/${drop_id}`);
   };
 
   const deleteDropdownHandler = (dropdown_id) => {
+    props.isloading(10);
     delete_dropdown(dropdown_id).then((res) => {
       if (res.success && res.data) {
+        setsnak({ severity: "success", message: res.data.message, open: true });
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
     });
+    props.isloading(100);
     navigate(0);
   };
 
@@ -96,6 +115,12 @@ const Dropdowns = () => {
 
   return (
     <Box m="20px">
+      <SimpleSnackbar
+        open={snak.open}
+        severity={snak.severity}
+        message={snak.message}
+        onClose={handleClose}
+      />
       <Header title="Dropdowns" subtitle="Managing the App Dropdowns" />
       <Box width="100%">
         <Button

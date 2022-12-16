@@ -18,13 +18,19 @@ import {
   create_post,
 } from "../../config/services/api_calls";
 import Header from "../../components/Header";
-import { useState } from "react";
-import { useEffect } from "react";
-const CreatPost = () => {
+import { useState, useEffect } from "react";
+import SimpleSnackbar from "../global/snackbar";
+
+const CreatPost = (props) => {
   const navigate = useNavigate();
   const [file, setFile] = useState("");
   const [catagories, setCatagory] = useState([]);
   const [tags, setTags] = useState([]);
+  const [snak, setsnak] = useState({
+    severity: "",
+    message: "",
+    open: false,
+  });
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -35,6 +41,22 @@ const CreatPost = () => {
       },
     },
   };
+  const handleClose = () => {
+    setsnak({
+      open: false,
+      severity: "",
+      message: "",
+    });
+  };
+  const filterhandler = (value) => {
+    const data = tags.filter((tag) => {
+      if (tag._id === value) {
+        return tag;
+      }
+    });
+    return data[0].tag_name;
+  };
+
   useEffect(() => {
     get_tags().then((res) => {
       if (res.success && res.data) {
@@ -53,6 +75,7 @@ const CreatPost = () => {
   }, []);
 
   const handleFormSubmit = (values) => {
+    props.isloading(10);
     const fd = new FormData();
     fd.append("thumbnail", file);
     fd.append("title", values.title);
@@ -62,17 +85,20 @@ const CreatPost = () => {
     fd.append("video_link", values.video_link);
     fd.append("title_am", values.title_am);
     fd.append("description_am", values.description_am);
-    console.log(fd);
     create_post(fd).then((res) => {
       if (res.success && res.data) {
-        alert(res.data.message);
-        navigate("/catagories");
+        setsnak({ severity: "success", message: "post created", open: true });
+        navigate("/posts");
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
     });
-
-    console.log("submitted", values);
+    props.isloading(100);
   };
 
   const checkoutSchema = yup.object().shape({
@@ -90,10 +116,6 @@ const CreatPost = () => {
     description_am: "",
   };
 
-  // console.log(file);
-  console.log("tags", tags);
-  // console.log("catagories", catagories);
-
   return (
     <Box
       m="30px"
@@ -102,6 +124,12 @@ const CreatPost = () => {
       flexDirection="column"
       justifyContent="center"
     >
+      <SimpleSnackbar
+        open={snak.open}
+        severity={snak.severity}
+        message={snak.message}
+        onClose={handleClose}
+      />
       <Header title="Create Post" subtitle="Create Post Here" />
       <Formik
         onSubmit={(values) => {
@@ -222,7 +250,7 @@ const CreatPost = () => {
                   renderValue={(selected) => (
                     <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                       {selected.map((value) => (
-                        <Chip key={value} label={value} />
+                        <Chip key={value} label={filterhandler(value)} />
                       ))}
                     </Box>
                   )}

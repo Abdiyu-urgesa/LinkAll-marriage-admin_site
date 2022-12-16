@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, useTheme } from "@mui/material";
+import { Box, Button, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import CheckBoxRoundedIcon from "@mui/icons-material/CheckBoxRounded";
@@ -13,13 +13,18 @@ import {
 } from "../../config/services/api_calls";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-const Business = () => {
+import SimpleSnackbar from "../global/snackbar";
+const Business = (props) => {
   // variable definations
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
+  const [snak, setsnak] = useState({
+    severity: "",
+    message: "",
+    open: false,
+  });
   // functions
   useEffect(() => {
     get_all_business_users().then((res) => {
@@ -30,32 +35,51 @@ const Business = () => {
       }
     });
   }, []);
+  const handleClose = () => {
+    setsnak({
+      open: false,
+      severity: "",
+      message: "",
+    });
+  };
 
   const manageBtnHandler = (drop_id, to) => {
     navigate(`/${to}/${drop_id}`);
   };
 
   const deleteHandler = (USERID) => {
+    props.isloading(10);
     delete_user(USERID).then((res) => {
       console.log(res.data);
       if (res.success && res.data) {
-        alert(res.data.message);
+        setsnak({ severity: "success", message: res.data.message, open: true });
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
     });
-    // navigate(0);
+    props.isloading(100);
   };
 
   const deactivateHandler = (USERID) => {
+    props.isloading(10);
     deactivate_user(USERID).then((res) => {
       if (res.success && res.data) {
-        alert(res.data.message);
+        setsnak({ severity: "success", message: res.data.message, open: true });
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
     });
-    // navigate(0);
+    props.isloading(100);
   };
 
   const columns = [
@@ -139,6 +163,12 @@ const Business = () => {
 
   return (
     <Box m="20px">
+      <SimpleSnackbar
+        open={snak.open}
+        severity={snak.severity}
+        message={snak.message}
+        onClose={handleClose}
+      />
       <Header
         title="Business Users"
         subtitle="Manage And Update Business Users"

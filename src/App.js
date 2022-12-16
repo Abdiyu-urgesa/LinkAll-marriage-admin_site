@@ -64,37 +64,103 @@ function App() {
             )}
             <Routes>
               <Route path="/" element={<SignIn isloading={setProgress} />} />
-              <Route path="/otp/:id" element={<OtpLogin />} />
+              <Route
+                path="/otp/:id"
+                element={<OtpLogin isloading={setProgress} />}
+              />
               {authCtx.isLoggedIn && (
                 <>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/users" element={<AppUsers />} />
-                  <Route path="/businessusers" element={<Business />} />
+                  <Route
+                    path="/dashboard"
+                    element={<Dashboard isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/users"
+                    element={<AppUsers isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/businessusers"
+                    element={<Business isloading={setProgress} />}
+                  />
                   <Route
                     path="/createbusiness"
-                    element={<CreateBusinessUser />}
+                    element={<CreateBusinessUser isloading={setProgress} />}
                   />
-                  <Route path="/createadmin" element={<CreateAdminUser />} />
-                  <Route path="/adminusers" element={<AdminUsers />} />
-                  <Route path="/edituser/:id" element={<EditUser />} />
+                  <Route
+                    path="/createadmin"
+                    element={<CreateAdminUser isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/adminusers"
+                    element={<AdminUsers isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/edituser/:id"
+                    element={<EditUser isloading={setProgress} />}
+                  />
 
-                  <Route path="/posts" element={<Posts />} />
-                  <Route path="/createposts" element={<CreatPost />} />
-                  <Route path="/catagories" element={<Catagories />} />
-                  <Route path="/createcatagory" element={<CreatCatagory />} />
-                  <Route path="/editcatagory/:id" element={<EditCatagory />} />
-                  <Route path="/tags" element={<Tags />} />
-                  <Route path="/creattags" element={<CreatTag />} />
-                  <Route path="/edittag/:id" element={<EditTag />} />
+                  <Route
+                    path="/posts"
+                    element={<Posts isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/createposts"
+                    element={<CreatPost isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/catagories"
+                    element={<Catagories isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/createcatagory"
+                    element={<CreatCatagory isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/editcatagory/:id"
+                    element={<EditCatagory isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/tags"
+                    element={<Tags isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/creattags"
+                    element={<CreatTag isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/edittag/:id"
+                    element={<EditTag isloading={setProgress} />}
+                  />
 
-                  <Route path="/dropdowns" element={<Dropdowns />} />
-                  <Route path="/addDropdown" element={<AddDropdown />} />
-                  <Route path="/editdropdown/:id" element={<EditDropdown />} />
-                  <Route path="/addfield/:id" element={<AddField />} />
+                  <Route
+                    path="/dropdowns"
+                    element={<Dropdowns isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/addDropdown"
+                    element={<AddDropdown isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/editdropdown/:id"
+                    element={<EditDropdown isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/addfield/:id"
+                    element={<AddField isloading={setProgress} />}
+                  />
 
-                  <Route path="/bar" element={<Bar />} />
-                  <Route path="/line" element={<Line />} />
-                  <Route path="/faq" element={<Feedback />} />
+                  <Route
+                    path="/bar"
+                    element={<Bar isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/line"
+                    element={<Line isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/faq"
+                    element={<Feedback isloading={setProgress} />}
+                  />
                 </>
               )}
             </Routes>

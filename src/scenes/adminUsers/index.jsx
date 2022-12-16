@@ -6,6 +6,7 @@ import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Header from "../../components/Header";
 import { useEffect } from "react";
+import SimpleSnackbar from "../global/snackbar";
 import {
   get_all_admin_users,
   deactivate_user,
@@ -13,14 +14,25 @@ import {
 } from "../../config/services/api_calls";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-const AdminUsers = () => {
+const AdminUsers = (props) => {
   // variable definations
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
+  const [snak, setsnak] = useState({
+    severity: "",
+    message: "",
+    open: false,
+  });
   // functions
+  const handleClose = () => {
+    setsnak({
+      open: false,
+      severity: "error",
+      message: "something went wrong",
+    });
+  };
   useEffect(() => {
     get_all_admin_users().then((res) => {
       if (res.success && res.data) {
@@ -36,26 +48,38 @@ const AdminUsers = () => {
   };
 
   const deleteHandler = (USERID) => {
+    props.isloading(10);
     delete_user(USERID).then((res) => {
       console.log(res.data);
       if (res.success && res.data) {
-        alert(res.data.message);
+        setsnak({ severity: "success", message: res.data.message, open: true });
       } else {
+        setsnak({
+          open: true,
+          severity: "error",
+          message: res.error.message,
+        });
         console.log(res.error);
       }
     });
-    // navigate(0);
+    props.isloading(100);
   };
 
   const deactivateHandler = (USERID) => {
+    props.isloading(10);
     deactivate_user(USERID).then((res) => {
       if (res.success && res.data) {
-        alert(res.data.message);
+        setsnak({ severity: "success", message: res.data.message, open: true });
       } else {
+        setsnak({
+          severity: "error",
+          message: "something went wrong",
+          open: true,
+        });
         console.log(res.error);
       }
     });
-    // navigate(0);
+    props.isloading(100);
   };
 
   const columns = [
@@ -109,6 +133,12 @@ const AdminUsers = () => {
             alignItems="center"
             gap="10px"
           >
+            <SimpleSnackbar
+              open={snak.open}
+              severity={snak.severity}
+              message={snak.message}
+              onClose={handleClose}
+            />
             <Button
               onClick={() => manageBtnHandler(params.row._id, "edituser")}
               color="secondary"

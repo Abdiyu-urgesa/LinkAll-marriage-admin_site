@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import SimpleSnackbar from "../global/snackbar";
 import {
   get_dropdown_byid,
   update_dropdown,
   update_field,
   delete_field,
 } from "../../config/services/api_calls";
-const EditDropdown = () => {
+const EditDropdown = (props) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const param = useParams();
@@ -19,11 +20,23 @@ const EditDropdown = () => {
   const [dropdown, setDropdowns] = useState({});
   const [dropdownName, setdropdownName] = useState(dropdown.name);
   const [dropdowncopy, setDropdownscopy] = useState({});
-
+  const [snak, setsnak] = useState({
+    severity: "",
+    message: "",
+    open: false,
+  });
   //  functions
   const striper = (array, indx) => {
     const x = Object.keys(array);
     return x[indx];
+  };
+
+  const handleClose = () => {
+    setsnak({
+      open: false,
+      severity: "",
+      message: "",
+    });
   };
 
   const onchangeHandler = (e) => {
@@ -53,6 +66,7 @@ const EditDropdown = () => {
   }, []);
 
   const handleFormSubmit = (event) => {
+    props.isloading(10);
     event.preventDefault();
     for (let i = 0; i < dropdowncopy.fields.length; i++) {
       delete dropdowncopy.fields[i].__v;
@@ -65,33 +79,60 @@ const EditDropdown = () => {
     }
     update_field(dropdowncopy.fields).then((res) => {
       if (res.success && res.data) {
+        setsnak({ severity: "success", message: res.data.message, open: true });
         console.log(res.data);
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
     });
-
+    props.isloading(70);
     update_dropdown(dropdownName, dropdownid).then((res) => {
       if (res.success && res.data) {
+        setsnak({ severity: "success", message: res.data.message, open: true });
         console.log(res.data);
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
     });
+    props.isloading(100);
   };
 
   const deleteFieldHandler = (field_id) => {
+    props.isloading(10);
     delete_field(field_id).then((res) => {
       if (res.success && res.data) {
+        setsnak({ severity: "success", message: res.data.message, open: true });
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
     });
+    props.isloading(100);
     navigate(0);
   };
 
   return (
     <Box m="20px">
+      <SimpleSnackbar
+        open={snak.open}
+        severity={snak.severity}
+        message={snak.message}
+        onClose={handleClose}
+      />
       <Header title="EDIT Dropdown" subtitle="Edit and Update Dropdowns" />
 
       <form onSubmit={handleFormSubmit}>

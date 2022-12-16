@@ -3,22 +3,46 @@ import { Form, Formik } from "formik";
 import * as yup from "yup";
 import { create_admin } from "../../config/services/api_calls";
 import { useNavigate } from "react-router-dom";
-
+import SimpleSnackbar from "../global/snackbar";
+import { useState } from "react";
 import Header from "../../components/Header";
-const CreateAdminUser = () => {
+const CreateAdminUser = (props) => {
   const navigate = useNavigate();
-
+  const [snak, setsnak] = useState({
+    severity: "",
+    message: "",
+    open: false,
+  });
+  const handleClose = () => {
+    setsnak({
+      open: false,
+      severity: "",
+      message: "",
+    });
+  };
   const handleFormSubmit = (values) => {
+    props.isloading(10);
     create_admin(values.code_name, values.phone, values.age, "ADMIN").then(
       (res) => {
         if (res.success && res.data) {
-          alert(res.data.message);
+          setsnak({
+            severity: "success",
+            message: res.data.message,
+            open: true,
+          });
+
           navigate("/businessusers");
         } else {
+          setsnak({
+            open: true,
+            severity: "error",
+            message: res.error,
+          });
           console.log(res.error);
         }
       }
     );
+    props.isloading(100);
   };
 
   const checkoutSchema = yup.object().shape({
@@ -40,6 +64,12 @@ const CreateAdminUser = () => {
       flexDirection="column"
       justifyContent="center"
     >
+      <SimpleSnackbar
+        open={snak.open}
+        severity={snak.severity}
+        message={snak.message}
+        onClose={handleClose}
+      />
       <Header title="Add Admin" subtitle="Add Admin User To Users List" />
       <Formik
         onSubmit={(values) => {

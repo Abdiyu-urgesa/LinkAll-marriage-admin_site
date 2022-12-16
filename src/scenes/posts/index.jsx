@@ -9,13 +9,18 @@ import { useEffect } from "react";
 import { fetchPosts, delete_post } from "../../config/services/api_calls";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-const Posts = () => {
+import SimpleSnackbar from "../global/snackbar";
+const Posts = (props) => {
   // variable definations
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
+  const [snak, setsnak] = useState({
+    severity: "",
+    message: "",
+    open: false,
+  });
   // functions
   useEffect(() => {
     fetchPosts().then((res) => {
@@ -26,23 +31,32 @@ const Posts = () => {
       }
     });
   }, []);
-
+  const handleClose = () => {
+    setsnak({
+      open: false,
+      severity: "",
+      message: "",
+    });
+  };
   const editHandler = (u_id) => {
-    // var user = users.filter((user) => {
-    //   return user._id === u_id;
-    // });
     navigate(`/edituser/${u_id}`);
   };
   const deleteHandler = (postID) => {
+    props.isloading(10);
     delete_post(postID).then((res) => {
       console.log(res.data);
       if (res.success && res.data) {
-        alert(res.data.message);
+        setsnak({ severity: "success", message: res.data.message, open: true });
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
     });
-    // navigate(0);
+    props.isloading(100);
   };
 
   const columns = [
@@ -101,6 +115,12 @@ const Posts = () => {
 
   return (
     <Box m="20px">
+      <SimpleSnackbar
+        open={snak.open}
+        severity={snak.severity}
+        message={snak.message}
+        onClose={handleClose}
+      />
       <Header title="Posts" subtitle="create and update app posts" />
 
       <Box width="100%">

@@ -4,14 +4,28 @@ import * as yup from "yup";
 import { verify_account } from "../../config/services/api_calls";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext } from "react";
+import { useState } from "react";
+import SimpleSnackbar from "../global/snackbar";
 import AuthContext from "../../config/store/auth-context";
-const OtpLogin = () => {
+const OtpLogin = (props) => {
   // const isNonMobile = useMediaQuery("(min-width:600px)");
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
   const userid = useParams();
-
+  const [snak, setsnak] = useState({
+    severity: "",
+    message: "",
+    open: false,
+  });
+  const handleClose = () => {
+    setsnak({
+      open: false,
+      severity: "",
+      message: "",
+    });
+  };
   const handleFormSubmit = (values) => {
+    props.isloading(10);
     const otp = values.otp;
     verify_account(otp, userid.id).then((res) => {
       if (res.success && res.data) {
@@ -20,11 +34,20 @@ const OtpLogin = () => {
           res.data.data.user_typ,
           res.data.data.code_name
         );
+
+        setsnak({ severity: "success", message: "Otp varified", open: true });
+        console.log(snak.severity);
         navigate("/dashboard");
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
     });
+    props.isloading(10);
   };
 
   const checkoutSchema = yup.object().shape({
@@ -36,6 +59,12 @@ const OtpLogin = () => {
 
   return (
     <Box m="20vh">
+      <SimpleSnackbar
+        open={snak.open}
+        severity={snak.severity}
+        message={snak.message}
+        onClose={handleClose}
+      />
       <Box display="flex" justifyContent="center" alignItems="center">
         <img
           alt="logo"

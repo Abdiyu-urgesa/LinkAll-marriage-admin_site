@@ -7,17 +7,22 @@ import {
   InputLabel,
   TextField,
 } from "@mui/material";
-
+import SimpleSnackbar from "../global/snackbar";
 import * as yup from "yup";
 import { Form, Formik } from "formik";
 import Header from "../../components/Header";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { get_user_byid, update_user } from "../../config/services/api_calls";
-const EditUser = () => {
+const EditUser = (props) => {
   const param = useParams();
   const userid = param.id;
   const [userData, setUserData] = useState({});
+  const [snak, setsnak] = useState({
+    severity: "",
+    message: "",
+    open: false,
+  });
   const initialValues = {
     role: "",
     age: "",
@@ -41,19 +46,39 @@ const EditUser = () => {
       }
     });
   }, []);
+  const handleClose = () => {
+    setsnak({
+      open: false,
+      severity: "",
+      message: "",
+    });
+  };
 
   const handleFormSubmit = (values) => {
+    props.isloading(10);
     update_user(values, userid).then((res) => {
       if (res.success && res.data) {
-        console.log(res.data);
+        setsnak({ severity: "success", message: res.data.message, open: true });
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
     });
+    props.isloading(100);
   };
 
   return (
     <Box m="20px">
+      <SimpleSnackbar
+        open={snak.open}
+        severity={snak.severity}
+        message={snak.message}
+        onClose={handleClose}
+      />
       <Header title="EDIT USER" subtitle="Edit and Update a User Profile" />
 
       <Formik

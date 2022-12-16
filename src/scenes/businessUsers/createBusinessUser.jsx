@@ -3,12 +3,25 @@ import { Form, Formik } from "formik";
 import * as yup from "yup";
 import { create_admin } from "../../config/services/api_calls";
 import { useNavigate } from "react-router-dom";
-
+import { useState } from "react";
+import SimpleSnackbar from "../global/snackbar";
 import Header from "../../components/Header";
-const CreateBusinessUser = () => {
+const CreateBusinessUser = (props) => {
   const navigate = useNavigate();
-
+  const [snak, setsnak] = useState({
+    severity: "",
+    message: "",
+    open: false,
+  });
+  const handleClose = () => {
+    setsnak({
+      open: false,
+      severity: "",
+      message: "",
+    });
+  };
   const handleFormSubmit = (values) => {
+    props.isloading(10);
     create_admin(
       values.code_name,
       values.phone,
@@ -16,12 +29,18 @@ const CreateBusinessUser = () => {
       "BUSSINES_ACCOUNT"
     ).then((res) => {
       if (res.success && res.data) {
-        alert(res.data.message);
+        setsnak({ severity: "success", message: res.data.message, open: true });
         navigate("/businessusers");
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
     });
+    props.isloading(100);
   };
 
   const checkoutSchema = yup.object().shape({
@@ -43,6 +62,12 @@ const CreateBusinessUser = () => {
       flexDirection="column"
       justifyContent="center"
     >
+      <SimpleSnackbar
+        open={snak.open}
+        severity={snak.severity}
+        message={snak.message}
+        onClose={handleClose}
+      />
       <Header title="Add Business" subtitle="Add Business User To Users List" />
       <Formik
         onSubmit={(values) => {

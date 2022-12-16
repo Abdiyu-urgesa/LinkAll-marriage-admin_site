@@ -4,15 +4,40 @@ import * as yup from "yup";
 import { login_with_otp } from "../../config/services/api_calls";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import SimpleSnackbar from "../global/snackbar";
+
 const SignIn = (props) => {
   const navigate = useNavigate();
+  const [snak, setsnak] = useState({
+    severity: "",
+    message: "",
+    open: false,
+  });
+
+  const handleClose = () => {
+    setsnak({
+      open: false,
+      severity: "",
+      message: "",
+    });
+  };
 
   const handleFormSubmit = (values) => {
     props.isloading(10);
     login_with_otp(values.phone).then((res) => {
       if (res.success && res.data) {
+        setsnak({
+          severity: "success",
+          message: "verify by OTP",
+          open: true,
+        });
         navigate(`otp/${res.data.data.user_id}`);
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
     });
@@ -28,6 +53,12 @@ const SignIn = (props) => {
 
   return (
     <Box m="20vh">
+      <SimpleSnackbar
+        open={snak.open}
+        severity={snak.severity}
+        message={snak.message}
+        onClose={handleClose}
+      />
       <Box display="flex" justifyContent="center" alignItems="center">
         <img
           alt="profile-user"
