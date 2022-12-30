@@ -36,6 +36,7 @@ import CreatePoint from "./scenes/points_payments/points/createPoint";
 import EditPoint from "./scenes/points_payments/points/editPoint";
 import CreditPackage from "./scenes/points_payments/credits";
 import CreateCreditpackage from "./scenes/points_payments/credits/create";
+import EditPost from "./scenes/posts/editPost";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -111,6 +112,10 @@ function App() {
                   <Route
                     path="/createposts"
                     element={<CreatPost isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/editpost/:id"
+                    element={<EditPost isloading={setProgress} />}
                   />
                   <Route
                     path="/catagories"

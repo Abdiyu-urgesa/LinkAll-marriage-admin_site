@@ -39,7 +39,7 @@ const Posts = (props) => {
     });
   };
   const editHandler = (u_id) => {
-    navigate(`/edituser/${u_id}`);
+    navigate(`/editpost/${u_id}`);
   };
   const deleteHandler = (postID) => {
     props.isloading(10);
@@ -94,7 +94,7 @@ const Posts = (props) => {
             gap="10px"
           >
             <Button
-              // onClick={() => deactivateHandler(params.row._id)}
+              onClick={() => editHandler(params.row._id)}
               color="secondary"
               variant="outlined"
             >
