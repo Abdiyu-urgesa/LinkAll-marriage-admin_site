@@ -31,6 +31,7 @@ import EditCatagory from "./scenes/posts/catagories/editCatagory";
 import EditTag from "./scenes/posts/tags/editTag";
 import CreatTag from "./scenes/posts/tags/createTag";
 import CreatPost from "./scenes/posts/createPost";
+import EditPost from "./scenes/posts/editPost";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -106,6 +107,10 @@ function App() {
                   <Route
                     path="/createposts"
                     element={<CreatPost isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/editpost/:id"
+                    element={<EditPost isloading={setProgress} />}
                   />
                   <Route
                     path="/catagories"

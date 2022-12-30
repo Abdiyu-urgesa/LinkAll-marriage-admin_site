@@ -170,7 +170,8 @@ const EditDropdown = (props) => {
                 variant="filled"
                 type="string"
                 id={drop?._id}
-                label={drop?.field_name}
+                // label={drop?.field_name}
+                placeholder={drop?.field_name}
                 onChange={onchangeHandler}
                 name={striper(drop, 1)}
               />

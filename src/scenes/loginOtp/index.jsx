@@ -47,7 +47,7 @@ const OtpLogin = (props) => {
         console.log(res.error);
       }
     });
-    props.isloading(10);
+    props.isloading(100);
   };
 
   const checkoutSchema = yup.object().shape({

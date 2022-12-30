@@ -61,7 +61,7 @@ const Dropdowns = (props) => {
       }
     });
     props.isloading(100);
-    navigate(0);
+    // navigate(0);
   };
 
   const columns = [
