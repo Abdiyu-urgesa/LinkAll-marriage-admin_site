@@ -17,6 +17,8 @@ import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import AuthContext from "../../config/store/auth-context";
+import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import CreditCardOffTwoToneIcon from '@mui/icons-material/CreditCardOffTwoTone';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -188,6 +190,27 @@ const Sidebar = () => {
               title="DropDowns"
               to="/dropdowns"
               icon={<ArrowDropDownCircleOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              Points and Payments
+            </Typography>
+            <Item
+              title="Points"
+              to="/points"
+              icon={<PriceCheckIcon/>}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Credit Packages"
+              to="/credit-packages"
+              icon={<CreditCardOffTwoToneIcon/>}
               selected={selected}
               setSelected={setSelected}
             />

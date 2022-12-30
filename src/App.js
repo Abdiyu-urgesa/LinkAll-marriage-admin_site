@@ -31,6 +31,11 @@ import EditCatagory from "./scenes/posts/catagories/editCatagory";
 import EditTag from "./scenes/posts/tags/editTag";
 import CreatTag from "./scenes/posts/tags/createTag";
 import CreatPost from "./scenes/posts/createPost";
+import Points from "./scenes/points_payments/points";
+import CreatePoint from "./scenes/points_payments/points/createPoint";
+import EditPoint from "./scenes/points_payments/points/editPoint";
+import CreditPackage from "./scenes/points_payments/credits";
+import CreateCreditpackage from "./scenes/points_payments/credits/create";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -160,6 +165,26 @@ function App() {
                   <Route
                     path="/faq"
                     element={<Feedback isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/points"
+                    element={<Points isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/createpoints"
+                    element={<CreatePoint isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/updatepoints/:id/:point/:point_type/"
+                    element={<EditPoint isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/credit-packages"
+                    element={<CreditPackage isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-credit-package"
+                    element={<CreateCreditpackage isloading={setProgress} />}
                   />
                 </>
               )}
