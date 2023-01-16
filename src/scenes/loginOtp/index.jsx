@@ -1,22 +1,25 @@
-import { Box, Button, TextField } from "@mui/material";
-import { Form, Formik } from "formik";
-import * as yup from "yup";
-import { verify_account } from "../../config/services/api_calls";
+import { Box, Typography } from "@mui/material";
+import { MuiOtpInput } from 'mui-one-time-password-input'
+import { verify_account } from "../../config/services/userServices";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext } from "react";
 import { useState } from "react";
 import SimpleSnackbar from "../global/snackbar";
 import AuthContext from "../../config/store/auth-context";
+
+
 const OtpLogin = (props) => {
-  // const isNonMobile = useMediaQuery("(min-width:600px)");
+
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
   const userid = useParams();
+  const [otpCode, setOtpCode] = useState("");
   const [snak, setsnak] = useState({
     severity: "",
     message: "",
     open: false,
   });
+
   const handleClose = () => {
     setsnak({
       open: false,
@@ -24,10 +27,16 @@ const OtpLogin = (props) => {
       message: "",
     });
   };
-  const handleFormSubmit = (values) => {
+
+  const handleChange = (newValue) => {
+    setOtpCode(newValue)
+  }
+  
+
+  const handleComplete = (values) => {
+    setOtpCode("");
     props.isloading(10);
-    const otp = values.otp;
-    verify_account(otp, userid.id).then((res) => {
+    verify_account(values, userid.id).then((res) => {
       if (res.success && res.data) {
         authCtx.login(
           res.data.data.accessToken,
@@ -50,15 +59,12 @@ const OtpLogin = (props) => {
     props.isloading(100);
   };
 
-  const checkoutSchema = yup.object().shape({
-    otp: yup.string().required("required"),
-  });
-  const initialValues = {
-    otp: "",
-  };
+  console.log(otpCode);
 
   return (
-    <Box m="20vh">
+
+
+    <Box m="20vh auto">
       <SimpleSnackbar
         open={snak.open}
         severity={snak.severity}
@@ -78,43 +84,38 @@ const OtpLogin = (props) => {
           }}
         />
       </Box>
-      <Formik
-        onSubmit={(values) => {
-          handleFormSubmit(values);
-        }}
-        initialValues={initialValues}
-        validationSchema={checkoutSchema}
+      <Box
+        display="flex"
+        container
+        spacing={0}
+        alignItems="center"
+        justifyContent="center"
+        marginBottom="50px"
       >
-        {({ values, errors, touched, handleBlur, handleChange }) => (
-          <Form>
-            <Box
-              width="300px"
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              gap="30px"
-              margin="auto"
-            >
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Otp"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.email}
-                name="otp"
-                error={!!touched.otp && !!errors.otp}
-                helperText={touched.otp && errors.otp}
-              />
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          sx={{ m: "0 0 5px 0",color:"#f7faf8" }}
+        >
+          Enter the OTP Sent To your Phone via SMS
+        </Typography>
+      </Box>
 
-              <Button type="submit" color="secondary" variant="contained">
-                Sign in
-              </Button>
-            </Box>
-          </Form>
-        )}
-      </Formik>
+      <Box
+        width="300px"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        gap="30px"
+        margin="auto"
+      >
+
+        <MuiOtpInput length={4} value={otpCode}
+          TextFieldsProps={{ disabled: false, placeholder: '-' }}
+          onComplete={handleComplete} onChange={handleChange} />
+
+      </Box>
+
     </Box>
   );
 };

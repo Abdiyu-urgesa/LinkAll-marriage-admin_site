@@ -6,7 +6,7 @@ import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import AppUsers from "./scenes/appUsers";
 import AdminUsers from "./scenes/adminUsers";
-import Business from "./scenes/businessUsers";
+import BusinessUsers from "./scenes/businessUsers";
 import Bar from "./scenes/bar";
 import EditUser from "./scenes/edituser";
 import Line from "./scenes/line";
@@ -17,7 +17,7 @@ import AuthContext from "./config/store/auth-context";
 import OtpLogin from "./scenes/loginOtp";
 import Posts from "./scenes/posts";
 import Dropdowns from "./scenes/dropDowns";
-import Feedback from "./scenes/feedback";
+import AppFeedBack from "./scenes/feedback/feedback";
 import EditDropdown from "./scenes/dropDowns/editDropdown";
 import AddField from "./scenes/dropDowns/addField";
 import AddDropdown from "./scenes/dropDowns/addDropdown";
@@ -37,6 +37,30 @@ import EditPoint from "./scenes/points_payments/points/editPoint";
 import CreditPackage from "./scenes/points_payments/credits";
 import CreateCreditpackage from "./scenes/points_payments/credits/create";
 import EditPost from "./scenes/posts/editPost";
+import UpdateCreditPackage from "./scenes/points_payments/credits/update";
+import QuizeList from "./scenes/quizes";
+import UpdateQuize from "./scenes/quizes/detail";
+import CreateQuizes from "./scenes/quizes/create";
+import PossibleQuizeAnswers from "./scenes/quizes/possibleAnswers";
+import ChatActivityTarrif from "./scenes/points_payments/charge-fee";
+import UpdateChatActivityTarrif from "./scenes/points_payments/charge-fee/update";
+import CreateActivityTarrif from "./scenes/points_payments/charge-fee/create";
+import AbuseReport from "./scenes/feedback/abuse_report";
+import ServiceCompanies from "./scenes/points_payments/serviceCompany";
+import CreateCompanyService from "./scenes/points_payments/serviceCompany/create";
+import UpdateCompanyService from "./scenes/points_payments/serviceCompany/update";
+import CustomAds from "./scenes/points_payments/ad";
+import UpdateAd from "./scenes/points_payments/ad/update";
+import CreateCustomAd from "./scenes/points_payments/ad/create";
+import ChatTextList from "./scenes/chatText";
+import CreateChatTextList from "./scenes/chatText/create";
+import UpdateChatTextList from "./scenes/chatText/detail";
+import ChatTextDetail from "./scenes/chatText/chatText";
+import PaymentAccount from "./scenes/points_payments/payments";
+import CreatePaymentAccount from "./scenes/points_payments/payments/create";
+import UpdatePaymentAccount from "./scenes/points_payments/payments/update";
+import CreditPayments from "./scenes/points_payments/payments/payment_info";
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -86,7 +110,7 @@ function App() {
                   />
                   <Route
                     path="/businessusers"
-                    element={<Business isloading={setProgress} />}
+                    element={<BusinessUsers isloading={setProgress} />}
                   />
                   <Route
                     path="/createbusiness"
@@ -101,7 +125,7 @@ function App() {
                     element={<AdminUsers isloading={setProgress} />}
                   />
                   <Route
-                    path="/edituser/:id"
+                    path="/edituser/:id/:next"
                     element={<EditUser isloading={setProgress} />}
                   />
 
@@ -168,8 +192,12 @@ function App() {
                     element={<Line isloading={setProgress} />}
                   />
                   <Route
-                    path="/faq"
-                    element={<Feedback isloading={setProgress} />}
+                    path="/feedback"
+                    element={<AppFeedBack isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/abuse-report"
+                    element={<AbuseReport isloading={setProgress} />}
                   />
                   <Route
                     path="/points"
@@ -190,6 +218,95 @@ function App() {
                   <Route
                     path="/create-credit-package"
                     element={<CreateCreditpackage isloading={setProgress} />}
+                  />
+                  <Route 
+                    path="/update-credit-package/:id/" 
+                    element={ <UpdateCreditPackage isloading={setProgress} />} 
+                  />
+                  <Route
+                    path="/company-services"
+                    element={<ServiceCompanies isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-company-services"
+                    element={<CreateCompanyService isloading={setProgress} />}
+                  />
+                  <Route 
+                    path="/update-company-services/:id/" 
+                    element={ <UpdateCompanyService isloading={setProgress} />} 
+                  />
+                  <Route
+                    path="/custom-ads"
+                    element={<CustomAds isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-ads"
+                    element={<CreateCustomAd isloading={setProgress} />}
+                  />
+                  <Route 
+                    path="/update-ads/:id/" 
+                    element={ <UpdateAd isloading={setProgress} />} 
+                  />
+                  <Route
+                    path="/activity-tarrifs"
+                    element={<ChatActivityTarrif isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-activity-tarrifs"
+                    element={<CreateActivityTarrif isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/update-activity-tarrif/:id/:tarrif/:action_type/"
+                    element={<UpdateChatActivityTarrif isloading={setProgress} />}
+                  />
+
+                  <Route
+                    path="/quizes"
+                    element={<QuizeList isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-quize"
+                    element={<CreateQuizes isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/quize-detail/:id/"
+                    element={<UpdateQuize isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-possibleAnswers/:id/"
+                    element={<PossibleQuizeAnswers isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/chat-text-list"
+                    element={<ChatTextList isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-chat-text-list"
+                    element={<CreateChatTextList isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/edit-chat-text-list/:id/"
+                    element={<UpdateChatTextList isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/chat-text/:id/"
+                    element={<ChatTextDetail isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/payment-accounts"
+                    element={<PaymentAccount isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-payment-accounts"
+                    element={<CreatePaymentAccount isloading={setProgress} />}
+                  />
+                   <Route
+                    path="/update-payment-account/:id/"
+                    element={<UpdatePaymentAccount isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/credit-payment/:status/"
+                    element={<CreditPayments isloading={setProgress} />}
                   />
                 </>
               )}

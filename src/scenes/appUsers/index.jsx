@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, useTheme } from "@mui/material";
+import { Avatar, Modal, Typography, Box, Button, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import CheckBoxRoundedIcon from "@mui/icons-material/CheckBoxRounded";
@@ -9,16 +9,18 @@ import {
   get_all_users,
   deactivate_user,
   delete_user,
-} from "../../config/services/api_calls";
+} from "../../config/services/userServices";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import SimpleSnackbar from "../global/snackbar";
+import { baseUrl } from "../../config/api/apiHelpers";
 
 const AppUsers = (props) => {
   // variable definations
   const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState({});
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [open, setOpen] = useState(false);
   const [snak, setsnak] = useState({
     severity: "",
     message: "",
@@ -42,21 +44,37 @@ const AppUsers = (props) => {
     });
   }, []);
 
+  const handleModalOpen = (user) => {
+    setSelectedUser(user)
+    setOpen(true)
+  };
+  const handleModalClose = () => setOpen(false);
+
+
   const deleteHandler = (USERID) => {
     props.isloading(10);
-    delete_user(USERID).then((res) => {
-      console.log(res.data);
-      if (res.success && res.data) {
-        setsnak({ severity: "success", message: res.data.message, open: true });
-      } else {
-        setsnak({
-          severity: "error",
-          message: res.error,
-          open: true,
-        });
-        console.log(res.error);
-      }
-    });
+
+    // eslint-disable-next-line no-restricted-globals
+    if(confirm("Are you sure you want to delete this user?") === true){
+      delete_user(USERID).then((res) => {
+        console.log(res.data);
+        if (res.success && res.data) {
+          setsnak({ severity: "success", message: res.data.message, open: true });
+          setUsers(
+            users.filter((value) => {
+              return value._id !== USERID;
+            })
+          )
+        } else {
+          setsnak({
+            severity: "error",
+            message: res.error,
+            open: true,
+          });
+          console.log(res.error);
+        }
+      });
+    }
     props.isloading(100);
   };
 
@@ -65,6 +83,15 @@ const AppUsers = (props) => {
     deactivate_user(USERID).then((res) => {
       if (res.success && res.data) {
         setsnak({ severity: "success", message: res.data.message, open: true });
+        var index = users.findIndex(
+          (item) => item._id === USERID
+        );
+        var newArr = [...users];
+        newArr[index] = {
+          ...users[index],
+          'is_active': res.data.userToDeactivate.is_active,
+        };
+        setUsers(newArr);
       } else {
         setsnak({
           severity: "error",
@@ -91,7 +118,7 @@ const AppUsers = (props) => {
       flex: 1,
       renderCell: (params) => (
         <Avatar
-          src={`https://api.toethiotravel.com/${params.row.avatar}`}
+          src={`${baseUrl}/${params.row.avatar}`}
         ></Avatar>
       ),
     },
@@ -164,10 +191,10 @@ const AppUsers = (props) => {
           >
             <Button
               onClick={() => deactivateHandler(params.row._id)}
-              color="secondary"
+              color={params.row.is_active ? "warning" : "secondary"}
               variant="outlined"
             >
-              Deactivate
+              {params.row.is_active ? "Suspend" : "activate"}
             </Button>
             <Button
               onClick={() => deleteHandler(params.row._id)}
@@ -176,6 +203,42 @@ const AppUsers = (props) => {
             >
               Delete
             </Button>
+            <Button
+              onClick={() => handleModalOpen(params.row)}
+              color="success"
+              variant="outlined"
+            >
+              More
+            </Button>
+
+            <Modal
+              keepMounted
+              open={open}
+              onClose={handleModalClose}
+              aria-labelledby="User Detail Profile"
+            >
+              <Box sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 600,
+                bgcolor: colors.blueAccent[900],
+                boxShadow: 24,
+                p: 4,
+              }}>
+                <Avatar src={`${baseUrl}/${selectedUser.avatar}`} ></Avatar>
+                <Typography variant="h6" component="h2">
+                  {selectedUser.code_name}
+                </Typography>
+                <Typography variant="h6" component="h4">
+                  {selectedUser.userId}
+                </Typography>
+
+
+
+              </Box>
+            </Modal>
           </Box>
         );
       },

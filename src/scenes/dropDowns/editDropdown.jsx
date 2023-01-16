@@ -10,7 +10,7 @@ import {
   update_dropdown,
   update_field,
   delete_field,
-} from "../../config/services/api_calls";
+} from "../../config/services/dropdownServices";
 const EditDropdown = (props) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -63,7 +63,7 @@ const EditDropdown = (props) => {
         console.log(res.error);
       }
     });
-  }, []);
+  }, [dropdown, dropdownid]);
 
   const handleFormSubmit = (event) => {
     props.isloading(10);
@@ -74,7 +74,7 @@ const EditDropdown = (props) => {
       delete dropdowncopy.fields[i].updatedAt;
       dropdowncopy.fields[i] = {
         ...dropdowncopy.fields[i],
-        ["_id"]: dropdownid,
+        "_id": dropdownid,
       };
     }
     update_field(dropdowncopy.fields).then((res) => {

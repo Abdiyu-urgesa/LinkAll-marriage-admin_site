@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const baseUrl = "https://api.toethiotravel.com";
+
 const axiosinstance = axios.create({
   baseURL: "https://api.toethiotravel.com",
   // baseURL:"http://localhost:4000",
@@ -11,4 +13,4 @@ axiosinstance.interceptors.request.use(function (config) {
   return config;
 });
 
-export default axiosinstance;
+export  {axiosinstance,baseUrl};

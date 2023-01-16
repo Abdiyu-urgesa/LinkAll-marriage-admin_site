@@ -4,7 +4,7 @@ import { tokens } from "../../../theme";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Header from "../../../components/Header";
 import { useEffect } from "react";
-import { fetchPoints, deletePoint } from "../../../config/services/point_service";
+import { fetchPoints, deletePoint } from "../../../config/services/pointService";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SimpleSnackbar from "../../global/snackbar";
@@ -63,6 +63,7 @@ const Points = (props) => {
     });
     props.isloading(100);
   };
+
 
   const columns = [
     {
@@ -172,7 +173,7 @@ const Points = (props) => {
           rows={points}
           getRowId={(rows) => rows._id}
           columns={columns}
-          components={{ Toolbar: GridToolbar }}
+          components={{ Toolbar: GridToolbar, }}
         />
       </Box>
     </Box>

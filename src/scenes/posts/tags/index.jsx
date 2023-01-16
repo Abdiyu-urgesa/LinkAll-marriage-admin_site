@@ -1,10 +1,10 @@
-import { Avatar, Box, Button, useTheme } from "@mui/material";
+import { Box, Button, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { tokens } from "../../../theme";
 import Header from "../../../components/Header";
 import { useEffect } from "react";
-import { get_tags, delete_tag } from "../../../config/services/api_calls";
+import { get_tags, delete_tag } from "../../../config/services/postServices";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Tags = () => {

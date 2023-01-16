@@ -4,15 +4,16 @@ import { tokens } from "../../../theme";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Header from "../../../components/Header";
 import { useEffect } from "react";
-import { fetchPoints, deletePoint } from "../../../config/services/point_service";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SimpleSnackbar from "../../global/snackbar";
+import {baseUrl } from "../../../config/api/apiHelpers";
+import { deleteAd, fetchAds } from "../../../config/services/adServices";
 
-const Points = (props) => {
+const CustomAds = (props) => {
   // variable definations
   const navigate = useNavigate();
-  const [points, setPoints] = useState([]);
+  const [ads, setAds] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [snak, setsnak] = useState({
@@ -23,15 +24,16 @@ const Points = (props) => {
 
   // functions
   useEffect(() => {
-    fetchPoints().then((res) => {
+    fetchAds().then((res) => {
       console.log(res.data);
       if (res.success && res.data) {
-        setPoints(res.data);
+        setAds(res.data);
       } else {
         console.log(res.error);
       }
     });
   }, []);
+
   const handleClose = () => {
     setsnak({
       open: false,
@@ -39,17 +41,20 @@ const Points = (props) => {
       message: "",
     });
   };
-  const editHandler = (pointid,point,type) => {
-    navigate(`/updatepoints/${pointid}/${point}/${type}/`);
+
+  const editHandler = (id) => {
+    navigate(`/update-ads/${id}/`);
   };
-  const deleteHandler = (pointId) => {
+
+  const deleteHandler = (id) => {
     props.isloading(10);
-    deletePoint(pointId).then((res) => {
+    // eslint-disable-next-line no-restricted-globals
+    if(confirm("Are you sure you want to delete this ad ?") === true){deleteAd(id).then((res) => {
       if (res.success && res.data) {
         setsnak({ severity: "success", message: res.data.message, open: true });
-        setPoints(
-          points.filter((value) => {
-            return value._id !== pointId;
+        setAds(
+          ads.filter((value) => {
+            return value._id !== id;
           })
         )
       } else {
@@ -60,18 +65,28 @@ const Points = (props) => {
         });
         console.log(res.error);
       }
-    });
+    });}
     props.isloading(100);
   };
 
+
   const columns = [
     {
-      field: "point_type",
-      headerName: "Point Type",
-      cellClassName: "name-column--cell",
+      field: "ad_gif",
+      headerName: "AD",
       flex: 2,
+      renderCell: (params) => {
+        return (
+          <Box width="50px"><img alt="Ad Gif"  src={`${baseUrl}/${params.row.ad_gif}`} /></Box>
+        );
+      }
     },
-    { field: "point", headerName: "Point", flex: 2 },
+    {
+      field: "ad_remark",
+      headerName: "Ad Remark",
+      cellClassName: "name-column--cell",
+      flex: 1,
+    },
     { field: "updatedAt", headerName: "Updated At" },
     { field: "createdAt", headerName: "Created At" },
     {
@@ -87,7 +102,7 @@ const Points = (props) => {
             gap="10px"
           >
             <Button
-              onClick={() => editHandler(params.row._id,params.row.point,params.row.point_type)}
+              onClick={() => editHandler(params.row._id)}
               color="secondary"
               variant="outlined"
             >
@@ -114,12 +129,12 @@ const Points = (props) => {
         message={snak.message}
         onClose={handleClose}
       />
-      <Header title="Points" subtitle="create and update points" />
+      <Header title="Custom Ads" subtitle="create and update custom ads" />
 
       <Box width="100%">
         <Button
           onClick={() => {
-            navigate("/createpoints");
+            navigate("/create-ads");
           }}
           sx={{
             backgroundColor: colors.blueAccent[700],
@@ -132,7 +147,7 @@ const Points = (props) => {
           }}
         >
           <AddOutlinedIcon sx={{ mr: "10px" }} />
-          Create Point
+          Create Ads
         </Button>
       </Box>
       <Box
@@ -169,14 +184,14 @@ const Points = (props) => {
       >
         <DataGrid
           // checkboxSelection
-          rows={points}
+          rows={ads}
           getRowId={(rows) => rows._id}
           columns={columns}
-          components={{ Toolbar: GridToolbar }}
+          components={{ Toolbar: GridToolbar, }}
         />
       </Box>
     </Box>
   );
 };
 
-export default Points;
+export default CustomAds;

@@ -13,19 +13,24 @@ import { Form, Formik } from "formik";
 import Chip from "@mui/material/Chip";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Header from "../../components/Header";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   get_tags,
   get_catagory,
-  update_user,
-} from "../../config/services/api_calls";
+  fetchPost,
+  updatePost,
+} from "../../config/services/postServices";
+
 const EditPost = (props) => {
   const param = useParams();
-  const userid = param.id;
+  const postid = param.id;
+  const navigate = useNavigate();
+
   const [catagories, setCatagory] = useState([]);
   const [tags, setTags] = useState([]);
   const [file, setFile] = useState("");
+  const [postInitialValues,setPostInitialValues] = useState({});
   const [snak, setsnak] = useState({
     severity: "",
     message: "",
@@ -42,7 +47,7 @@ const EditPost = (props) => {
     },
   };
   const initialValues = {
-    thumbnail: "",
+    thumbnail: "test",
     title: "",
     description: "",
     tags: [],
@@ -51,7 +56,6 @@ const EditPost = (props) => {
     title_am: "",
     description_am: "",
   };
-  //  functions
 
   useEffect(() => {
     get_tags().then((res) => {
@@ -68,7 +72,26 @@ const EditPost = (props) => {
         console.log(res.error);
       }
     });
-  }, []);
+    fetchPost(postid).then((res) => {
+      if (res.success && res.data) {
+        console.log(res.data);
+        setPostInitialValues(res.data);
+        // setInitialValues({
+        //   thumbnail: res.data.thumbnail,
+        //   title: res.data.title,
+        //   description: res.data.description,
+        //   tags: [],
+        //   post_category: "",
+        //   video_link: res.data.video_link,
+        //   title_am: res.data.title_am,
+        //   description_am: res.data.description_am,
+        // });
+      } else {
+        console.log(res.error);
+      }
+    });
+  }, [postid]);
+
   const handleClose = () => {
     setsnak({
       open: false,
@@ -88,7 +111,16 @@ const EditPost = (props) => {
 
   const handleFormSubmit = (values) => {
     props.isloading(10);
-    update_user(values, userid).then((res) => {
+    const fd = new FormData();
+    fd.append("thumbnail", file);
+    fd.append("title", values.title);
+    fd.append("description", values.description);
+    fd.append("tags", values.tags);
+    fd.append("post_category", values.post_category);
+    fd.append("video_link", values.video_link);
+    fd.append("title_am", values.title_am);
+    fd.append("description_am", values.description_am);
+    updatePost(postid, values).then((res) => {
       if (res.success && res.data) {
         setsnak({ severity: "success", message: res.data.message, open: true });
       } else {
@@ -103,6 +135,7 @@ const EditPost = (props) => {
     props.isloading(100);
   };
 
+  console.log(postInitialValues);
   return (
     <Box
       m="30px"
@@ -119,6 +152,7 @@ const EditPost = (props) => {
       />
       <Header title="EDIT Post" subtitle="Edit Post Here" />
       <Formik
+      enableReinitialize={true}
         onSubmit={(values) => {
           handleFormSubmit(values);
         }}
@@ -261,6 +295,9 @@ const EditPost = (props) => {
                     setFile(event.target.files[0]);
                   }}
                 />
+              </Button>
+              <Button onClick={()=>navigate("/posts")} type="button" color="error" variant="contained">
+                Cancel
               </Button>
               <Button type="submit" color="secondary" variant="contained">
                 submit

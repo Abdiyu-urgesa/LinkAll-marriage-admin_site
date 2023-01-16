@@ -1,9 +1,46 @@
-import api from "../api/api";
+import { axiosinstance  as api } from "../api/apiHelpers";
 
-
-export const create_point = async (formdata) => {
+/** 
+ * Api Services for Dropdowns
+ * 
+ * as the names are descriptive 
+ * the service fundctions are for 
+ * create,update,get all ,get byid and delete for Dropdowns
+ * 
+*/
+export const fetchdropdowns = async () => {
     try {
-      const response = await api.post("/api/points/create", formdata);
+      const response = await api.get("/api/dropdown/all");
+      return { success: true, data: response.data };
+    } catch (err) {
+      if (err.response) {
+        console.log(err.response.data);
+        return { success: false, data: null, error: err.message };
+      } else {
+        console.log(`Error: ${err.message}`);
+      }
+    }
+  };
+  
+  export const get_dropdown_byid = async (dropdown_id) => {
+    try {
+      const response = await api.get(`/api/dropdown/byid/${dropdown_id}`);
+      return { success: true, data: response.data };
+    } catch (err) {
+      if (err.response) {
+        console.log(err.response.data);
+        return { success: false, data: null, error: err.message };
+      } else {
+        console.log(`Error: ${err.message}`);
+      }
+    }
+  };
+  
+  export const update_dropdown = async (dropdown_name, dropdown_id) => {
+    try {
+      const response = await api.put(`/api/Dropdown/update/${dropdown_id}`, {
+        name: dropdown_name,
+      });
   
       return { success: true, data: response.data };
     } catch (err) {
@@ -16,81 +53,9 @@ export const create_point = async (formdata) => {
     }
   };
   
-  export const createCreditPackage = async (formdata) => {
+  export const update_field = async (field_obj) => {
     try {
-      const response = await api.post("/api/credit/create", formdata);
-  
-      return { success: true, data: response.data };
-    } catch (err) {
-      if (err.response) {
-        console.log(err.response.data);
-        return { success: false, data: null, error: err.message };
-      } else {
-        console.log(`Error: ${err.message}`);
-      }
-    }
-  };
-
-export const fetchPoints = async () => {
-    try {
-      const response = await api.get("/api/points/all");
-      return { success: true, data: response.data };
-    } catch (err) {
-      if (err.response) {
-        console.log(err.response.data);
-        return { success: false, data: null, error: err.message };
-      } else {
-        console.log(`Error: ${err.message}`);
-      }
-    }
-  };
-
-  export const fetchCreditPackages = async () => {
-    try {
-      const response = await api.get("/api/credit/all");
-      return { success: true, data: response.data };
-    } catch (err) {
-      if (err.response) {
-        console.log(err.response.data);
-        return { success: false, data: null, error: err.message };
-      } else {
-        console.log(`Error: ${err.message}`);
-      }
-    }
-  };
-
-  export const get_points_byid = async (point_id) => {
-    try {
-      const response = await api.get(`/api/points/get-point/${point_id}`);
-      return { success: true, data: response.data };
-    } catch (err) {
-      if (err.response) {
-        console.log(err.response.data);
-        return { success: false, data: null, error: err.message };
-      } else {
-        console.log(`Error: ${err.message}`);
-      }
-    }
-  };
-
-export const deletePoint = async (point_id) => {
-    try {
-      const response = await api.delete(`/api/points/delete/${point_id}`);
-      return { success: true, data: response.data };
-    } catch (err) {
-      if (err.response) {
-        console.log(err.response.data);
-        return { success: false, data: null, error: err.message };
-      } else {
-        console.log(`Error: ${err.message}`);
-      }
-    }
-  };
-
-
-  export const deleteCreditPackage = async (id) => {
-    try {
-      const response = await api.delete(`/api/credit/delete/${id}`);
+      const response = await api.put("/api/Dropdown/update-fields", field_obj);
       return { success: true, data: response.data };
     } catch (err) {
       if (err.response) {
@@ -102,32 +67,70 @@ export const deletePoint = async (point_id) => {
     }
   };
   
-export const updatePointAmount = async (point,point_id) => {
-  try {
-    const response = await api.put(`/api/points/update/${point_id}`, {
-      point: point
-    });
-    return { success: true, data: response.data };
-  } catch (err) {
-    if (err.response) {
-      console.log(err.response.data);
-      return { success: false, data: null, error: err.response.data.message };
-    } else {
-      console.log(`Error: ${err.message}`);
+  export const add_dropdown_field = async (
+    field_name,
+    field_name_am,
+    dropdown_id
+  ) => {
+    try {
+      const response = await api.put(`/api/Dropdown/addfield/${dropdown_id}`, {
+        field_name: field_name,
+        field_name_am: field_name_am,
+      });
+  
+      return { success: true, data: response.data };
+    } catch (err) {
+      if (err.response) {
+        console.log(err.response.data);
+        return { success: false, data: null, error: err.message };
+      } else {
+        console.log(`Error: ${err.message}`);
+      }
     }
-  }
-};
-
-export const updateCreditPackage = async (formData,id) => {
-  try {
-    const response = await api.put(`/api/credit/update/${id}`, formData);
-    return { success: true, data: response.data };
-  } catch (err) {
-    if (err.response) {
-      console.log(err.response.data);
-      return { success: false, data: null, error: err.response.data.message };
-    } else {
-      console.log(`Error: ${err.message}`);
+  };
+  export const create_dropdown = async (dropdown_name) => {
+    try {
+      const response = await api.post("/api/Dropdown/create", {
+        name: dropdown_name,
+      });
+  
+      return { success: true, data: response.data };
+    } catch (err) {
+      if (err.response) {
+        console.log(err.response.data);
+        return { success: false, data: null, error: err.message };
+      } else {
+        console.log(`Error: ${err.message}`);
+      }
     }
-  }
-};
+  };
+  
+  export const delete_dropdown = async (dropdown_id) => {
+    try {
+      const response = await api.delete(`/api/DropDown/delete/${dropdown_id}`);
+  
+      return { success: true, data: response.data };
+    } catch (err) {
+      if (err.response) {
+        console.log(err.response.data);
+        return { success: false, data: null, error: err.message };
+      } else {
+        console.log(`Error: ${err.message}`);
+      }
+    }
+  };
+  
+  export const delete_field = async (field_id) => {
+    try {
+      const response = await api.delete(`/api/DropDown/delete-field/${field_id}`);
+      return { success: true, data: response.data };
+    } catch (err) {
+      if (err.response) {
+        console.log(err.response.data);
+        return { success: false, data: null, error: err.message };
+      } else {
+        console.log(`Error: ${err.message}`);
+      }
+    }
+  };
+  

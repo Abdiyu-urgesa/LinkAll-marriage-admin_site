@@ -1,14 +1,17 @@
-import { Box, Button, useTheme } from "@mui/material";
+/* eslint-disable no-restricted-globals */
+import { Box, Button,Avatar, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { tokens } from "../../../theme";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Header from "../../../components/Header";
 import { useEffect } from "react";
-import { delete_paymentAccount, fetchPaymentAccounts} from "../../../config/services/payment_services";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SimpleSnackbar from "../../global/snackbar";
+import {baseUrl } from "../../../config/api/apiHelpers";
+import { deletePaymentAccount, fetchPaymentAccounts } from "../../../config/services/paymentServices";
 
-const PaymentAccounts = () => {
+const PaymentAccount = (props) => {
   // variable definations
   const navigate = useNavigate();
   const [paymentAccounts, setPaymentAccounts] = useState([]);
@@ -19,9 +22,11 @@ const PaymentAccounts = () => {
     message: "",
     open: false,
   });
+
   // functions
   useEffect(() => {
     fetchPaymentAccounts().then((res) => {
+      console.log(res.data);
       if (res.success && res.data) {
         setPaymentAccounts(res.data);
       } else {
@@ -38,47 +43,59 @@ const PaymentAccounts = () => {
     });
   };
 
-  const deleteHandler = (tagID) => {
-    delete_paymentAccount(tagID).then((res) => {
-      console.log(res.data);
+  const editHandler = (id) => {
+    navigate(`/update-payment-account/${id}/`);
+  };
+
+  const deleteHandler = (id) => {
+    props.isloading(10);
+    if(confirm("Are you sure you want to delete this Account ?") === true){deletePaymentAccount(id).then((res) => {
       if (res.success && res.data) {
-        alert(res.data.message);
+        setsnak({ severity: "success", message: res.data.message, open: true });
+        setPaymentAccounts(
+          paymentAccounts.filter((value) => {
+            return value._id !== id;
+          })
+        )
       } else {
+        setsnak({
+          severity: "error",
+          message: res.error,
+          open: true,
+        });
         console.log(res.error);
       }
-    });
+    });}
+    props.isloading(100);
   };
 
-  const EditHandler = (id) => {
-    navigate(`/editpayment/${id}`);
-  };
 
   const columns = [
+    {
+      field: "logo",
+      headerName: "Logo",
+      flex: 1,
+      renderCell: (params) => {
+        return (
+          <Avatar  src={`${baseUrl}/${params.row.logo}`} />
+        );
+      }
+    },
     {
       field: "payment_name",
       headerName: "Payment Name",
       cellClassName: "name-column--cell",
-      flex: 3,
+      flex: 1,
     },
-    {
-      field: "account_name",
-      headerName: "Account Name",
-      cellClassName: "name-column--cell",
-      flex: 3,
-    },
-    {
-      field: "account_number",
-      headerName: "Account Number",
-      cellClassName: "name-column--cell",
-      flex: 3,
-    },
-
-    { field: "updatedAt", headerName: "Updated At" },
+    { field: "account_name", headerName: "Account Name", flex: 1 },
+    { field: "account_number", headerName: "Account Number", flex: 1 },
+    { field: "payment_online", headerName: "Online Payment", flex: 1 },
+    { field: "payment_local", headerName: "Local Payment",},
     { field: "createdAt", headerName: "Created At" },
     {
       field: "_id",
       headerName: "Manage",
-      flex: 2,
+      flex: 1,
       renderCell: (params) => {
         return (
           <Box
@@ -88,11 +105,11 @@ const PaymentAccounts = () => {
             gap="10px"
           >
             <Button
-              onClick={() => EditHandler(params.row._id)}
+              onClick={() => editHandler(params.row._id)}
               color="secondary"
               variant="outlined"
             >
-              Edit
+              Update
             </Button>
             <Button
               onClick={() => deleteHandler(params.row._id)}
@@ -109,11 +126,18 @@ const PaymentAccounts = () => {
 
   return (
     <Box m="20px">
-      <Header title="Tags" subtitle="Managing the post Tags" />
+      <SimpleSnackbar
+        open={snak.open}
+        severity={snak.severity}
+        message={snak.message}
+        onClose={handleClose}
+      />
+      <Header title="Payment Accounts" subtitle="create and update Payment Accounts" />
+
       <Box width="100%">
         <Button
           onClick={() => {
-            navigate("/creattags");
+            navigate("/create-payment-accounts");
           }}
           sx={{
             backgroundColor: colors.blueAccent[700],
@@ -126,7 +150,7 @@ const PaymentAccounts = () => {
           }}
         >
           <AddOutlinedIcon sx={{ mr: "10px" }} />
-          Create Tag
+          Create Payment Account
         </Button>
       </Box>
       <Box
@@ -164,13 +188,13 @@ const PaymentAccounts = () => {
         <DataGrid
           // checkboxSelection
           rows={paymentAccounts}
-          getRowId={(row) => row._id}
+          getRowId={(rows) => rows._id}
           columns={columns}
-          components={{ Toolbar: GridToolbar }}
+          components={{ Toolbar: GridToolbar, }}
         />
       </Box>
     </Box>
   );
 };
 
-export default PaymentAccounts;
+export default PaymentAccount;

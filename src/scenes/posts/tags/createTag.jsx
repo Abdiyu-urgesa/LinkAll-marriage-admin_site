@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
-import { create_tag } from "../../../config/services/api_calls";
+import { create_tag } from "../../../config/services/postServices";
 import { useNavigate } from "react-router-dom";
 
 import Header from "../../../components/Header";

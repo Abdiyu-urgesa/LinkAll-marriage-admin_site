@@ -11,8 +11,8 @@ import { Form, Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import {
-  create_point,
-} from "../../../config/services/point_service";
+  createPoint,
+} from "../../../config/services/pointService";
 import Header from "../../../components/Header";
 import { useState, useEffect } from "react";
 import SimpleSnackbar from "../../global/snackbar";
@@ -48,7 +48,7 @@ const CreatePoint = (props) => {
     console.log(values)
     props.isloading(10);
 
-    create_point(values).then((res) => {
+    createPoint(values).then((res) => {
       if (res.success && res.data) {
         setsnak({ severity: "success", message: "Point created", open: true });
         navigate("/points");
@@ -65,8 +65,8 @@ const CreatePoint = (props) => {
   };
 
   const checkoutSchema = yup.object().shape({
-    point: yup.string().required("required"),
-    point_type: yup.string().required("required"),
+    point: yup.string().required("Point Amount required"),
+    point_type: yup.string().required("Point type required"),
   });
   const initialValues = {
     point_type: "",
@@ -75,7 +75,7 @@ const CreatePoint = (props) => {
 
   return (
     <Box
-    m="20vh auto"
+    m="5vh auto"
     width="500px"
     display="flex"
     flexDirection="column"
@@ -139,9 +139,20 @@ const CreatePoint = (props) => {
                   ))}
                 </Select>
               </FormControl>
-              <Button type="submit" color="secondary" variant="contained">
-                submit
-              </Button>
+              <Box m="10px"
+                  gap="40px"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center">
+
+                  
+                  <Button type="button" onClick={()=>navigate("/points")} m="10px" sx={{  width: "30%", height:"40px" }} color="error" variant="contained">
+                      Cancel
+                    </Button>
+                    <Button type="submit" m="10px" sx={{  width: "30%", height:"40px" }} color="secondary" variant="contained">
+                      Submit
+                    </Button>
+                </Box>
             </Box>
           </Form>
         )}

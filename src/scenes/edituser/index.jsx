@@ -10,25 +10,28 @@ import {
 import SimpleSnackbar from "../global/snackbar";
 import * as yup from "yup";
 import { Form, Formik } from "formik";
+import { useNavigate } from "react-router-dom";
+
 import Header from "../../components/Header";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { get_user_byid, update_user } from "../../config/services/api_calls";
+import { get_user_byid, update_user } from "../../config/services/userServices";
+
 const EditUser = (props) => {
   const param = useParams();
   const userid = param.id;
+  const next = param.next;
+  const navigate = useNavigate();
+
   const [userData, setUserData] = useState({});
+  const [initialValues,setInitialValues] = useState({});
+
   const [snak, setsnak] = useState({
     severity: "",
     message: "",
     open: false,
   });
-  const initialValues = {
-    role: "",
-    age: "",
-    code_name: "",
-    phone: "",
-  };
+
   const checkoutSchema = yup.object().shape({
     age: yup.string().required("required"),
     code_name: yup.string().required("required"),
@@ -41,11 +44,18 @@ const EditUser = (props) => {
     get_user_byid(userid).then((res) => {
       if (res.success && res.data) {
         setUserData({ ...userData, ...res.data });
+        setInitialValues({
+          role: res.data.user_type,
+          age: res.data.age,
+          code_name: res.data.code_name,
+          phone: res.data.phone_number,
+        })
       } else {
         console.log(res.error);
       }
     });
-  }, []);
+  }, [userData, userid]);
+
   const handleClose = () => {
     setsnak({
       open: false,
@@ -59,6 +69,7 @@ const EditUser = (props) => {
     update_user(values, userid).then((res) => {
       if (res.success && res.data) {
         setsnak({ severity: "success", message: res.data.message, open: true });
+        navigate(`/${next}`);
       } else {
         setsnak({
           severity: "error",
@@ -72,7 +83,11 @@ const EditUser = (props) => {
   };
 
   return (
-    <Box m="20px">
+    <Box m="20vh auto"
+    width="500px"
+    display="flex"
+    flexDirection="column"
+    justifyContent="center">
       <SimpleSnackbar
         open={snak.open}
         severity={snak.severity}
@@ -92,15 +107,17 @@ const EditUser = (props) => {
         {({ values, errors, touched, handleBlur, handleChange }) => (
           <Form>
             <Box
-              margin="10% 0%"
-              width="100%"
-              display="grid"
-              gridTemplateColumns="1fr 1fr"
-              gap="30px"
+               width="500px"
+               display="flex"
+               flexDirection="column"
+               justifyContent="center"
+               gap="30px"
+               margin="auto"
             >
               <FormControl fullWidth>
                 <InputLabel id="role">Role Of User</InputLabel>
                 <Select
+                displayEmpty
                   fullWidth
                   labelId="role"
                   variant="filled"

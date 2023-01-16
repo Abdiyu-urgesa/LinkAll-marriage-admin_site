@@ -12,13 +12,20 @@ import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import ContentPasteOutlinedIcon from "@mui/icons-material/ContentPasteOutlined";
 import ArrowDropDownCircleOutlinedIcon from "@mui/icons-material/ArrowDropDownCircleOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import AuthContext from "../../config/store/auth-context";
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import CreditCardOffTwoToneIcon from '@mui/icons-material/CreditCardOffTwoTone';
+import QuizIcon from '@mui/icons-material/Quiz';
+import PriceChangeIcon from '@mui/icons-material/PriceChange';
+import FeaturedVideoIcon from '@mui/icons-material/FeaturedVideo';
+import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import FlagIcon from '@mui/icons-material/Flag';
+import FeedbackIcon from '@mui/icons-material/Feedback';
+import PaymentsIcon from '@mui/icons-material/Payments';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -84,7 +91,7 @@ const Sidebar = () => {
                 ml="15px"
               >
                 <Typography variant="h3" color={colors.grey[100]}>
-                  Marriage App
+                  Mnet App Admin
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
@@ -121,7 +128,14 @@ const Sidebar = () => {
           )}
 
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            <Item
+          <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              Modules
+            </Typography>
+          <Item
               title="Dashboard"
               to="/dashboard"
               icon={<HomeOutlinedIcon />}
@@ -129,42 +143,69 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
+            {authCtx.role ===  "SUPERADMIN"
+             ? <>
+          <Typography
+            variant="h6"
+            color={colors.grey[300]}
+            sx={{ m: "15px 0 5px 20px" }}
+          >
+            Users
+          </Typography>
+          <Item
+            title="Manage Users"
+            to="/users"
+            icon={<PeopleOutlinedIcon />}
+            selected={selected}
+            setSelected={setSelected}
+          />
+          <Item
+            title="Business Users"
+            to="/businessusers"
+            icon={<ContactsOutlinedIcon />}
+            selected={selected}
+            setSelected={setSelected}
+          />
+          <Item
+            title="Admin Users"
+            to="/adminusers"
+            icon={<ReceiptOutlinedIcon />}
+            selected={selected}
+            setSelected={setSelected}
+          /></> : <></>
+            }
+            
             <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              Users
+              Media
             </Typography>
-            <Item
-              title="Manage Users"
-              to="/users"
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Business Users"
-              to="/businessusers"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Admin Users"
-              to="/adminusers"
-              icon={<ReceiptOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Enteries
-            </Typography>
+            {
+            authCtx.role === "ADMIN" || authCtx.role ===  "SUPERADMIN"
+            ? <><Item
+            title="Catagories"
+            to="/catagories"
+            icon={<CategoryOutlinedIcon />}
+            selected={selected}
+            setSelected={setSelected}
+          />
+          <Item
+            title="Tags"
+            to="/tags"
+            icon={<TagOutlinedIcon />}
+            selected={selected}
+            setSelected={setSelected}
+          />
+          <Item
+            title="DropDowns"
+            to="/dropdowns"
+            icon={<ArrowDropDownCircleOutlinedIcon />}
+            selected={selected}
+            setSelected={setSelected}
+          /></> : <></>
+            }
             <Item
               title="Posts"
               to="/posts"
@@ -172,27 +213,9 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Catagories"
-              to="/catagories"
-              icon={<CategoryOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Tags"
-              to="/tags"
-              icon={<TagOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="DropDowns"
-              to="/dropdowns"
-              icon={<ArrowDropDownCircleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            
+            {authCtx.role === "ADMIN" || authCtx.role ===  "SUPERADMIN"
+            ? <>
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -208,20 +231,89 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
+              title="Activity Tarrif"
+              to="/activity-tarrifs"
+              icon={<PriceChangeIcon/>}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
               title="Credit Packages"
               to="/credit-packages"
               icon={<CreditCardOffTwoToneIcon/>}
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="feedbacks"
-              to="/faq"
-              icon={<HelpOutlineOutlinedIcon />}
+             <Item
+              title="Company Services"
+              to="/company-services"
+              icon={<MiscellaneousServicesIcon/>}
               selected={selected}
               setSelected={setSelected}
             />
-
+            <Item
+              title="Custom Ads"
+              to="/custom-ads"
+              icon={<FeaturedVideoIcon/>}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Payment Accounts"
+              to="/payment-accounts"
+              icon={<PaymentsIcon/>}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="New Credit Payment"
+              to="/credit-payment/invalidated/"
+              icon={<PaymentsIcon/>}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Aproved Credit Payment"
+              to="/credit-payment/validated/"
+              icon={<PaymentsIcon/>}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              Quize & Reports
+            </Typography>
+            <Item
+              title="Quizes"
+              to="/quizes"
+              icon={<QuizIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="ChatText"
+              to="/chat-text-list"
+              icon={<QuestionAnswerIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="App Feedbacks"
+              to="/feedback"
+              icon={<FeedbackIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Abuse Report"
+              to="/abuse-report"
+              icon={<FlagIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -244,6 +336,8 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            </> : <></>}
+            
           </Box>
         </Menu>
       </ProSidebar>

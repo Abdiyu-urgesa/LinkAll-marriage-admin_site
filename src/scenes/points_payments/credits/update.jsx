@@ -1,10 +1,10 @@
 import { Box, Button, TextField } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
-import { updateCreditPackage } from "../../../config/services/point_service";
+import { fetchCreditPackageById, updateCreditPackage } from "../../../config/services/pointService";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Header from "../../../components/Header";
 import SimpleSnackbar from "../../global/snackbar";
 
@@ -14,7 +14,7 @@ const UpdateCreditPackage = () => {
   const id = param.id;
 
   const navigate = useNavigate();
-  const initialValues = {};
+  const [initialValues,setIntialValues] = useState({});
 
   const [snak, setsnak] = useState({
     severity: "",
@@ -23,6 +23,19 @@ const UpdateCreditPackage = () => {
   });
 
  
+  useEffect(() => {
+    fetchCreditPackageById(id).then((res) => {
+      if (res.success && res.data) {
+        console.log(res.data);
+        setIntialValues({credit:res.data.credit,
+                        cost_in_birr:res.data.cost_in_birr,
+                        cost_in_usd:res.data.cost_in_usd});
+      } else {
+        console.log(res.error);
+      }
+    });
+  }, [id]);
+
   const handleFormSubmit = (values) => {
     updateCreditPackage(values, id).then(
       (res) => {
@@ -48,7 +61,7 @@ const UpdateCreditPackage = () => {
     });
   };
   const checkoutSchema = yup.object().shape({
-    point: yup.string().required("required"),
+    credit: yup.string().required("required"),
   });
 
    
@@ -90,18 +103,54 @@ const UpdateCreditPackage = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                type="string"
-                label="Point Amount"
+                type="number"
+                label="Credit Amount"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.point}
-                name="point"
-                error={!!touched.point && !!errors.point}
-                helperText={touched.point && errors.point}
+                value={values.credit}
+                name="credit"
+                error={!!touched.credit && !!errors.credit}
+                helperText={touched.credit && errors.credit}
               />
-              <Button type="submit" color="secondary" variant="contained">
-                submit
-              </Button>
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="Credit Cost in ETB/Birr"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.cost_in_birr}
+                name="cost_in_birr"
+                error={!!touched.cost_in_birr && !!errors.cost_in_birr}
+                helperText={touched.cost_in_birr && errors.cost_in_birr}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="number"
+                label="Credit Cost in USD"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.cost_in_usd}
+                name="cost_in_usd"
+                error={!!touched.cost_in_usd && !!errors.cost_in_usd}
+                helperText={touched.cost_in_usd && errors.cost_in_usd}
+              />
+              
+             <Box m="10px"
+                  gap="40px"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center">
+
+                  
+                  <Button type="button" onClick={()=>navigate("/credit-packages")} m="10px" sx={{  width: "30%", height:"40px" }} color="error" variant="contained">
+                      Cancel
+                    </Button>
+                    <Button type="submit" m="10px" sx={{  width: "30%", height:"40px" }} color="secondary" variant="contained">
+                      Submit
+                    </Button>
+                </Box>
             </Box>
           </Form>
          )}

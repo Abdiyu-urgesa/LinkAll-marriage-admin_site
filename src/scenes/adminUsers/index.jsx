@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, useTheme } from "@mui/material";
+import { Box, Button, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import CheckBoxRoundedIcon from "@mui/icons-material/CheckBoxRounded";
@@ -11,7 +11,7 @@ import {
   get_all_admin_users,
   deactivate_user,
   delete_user,
-} from "../../config/services/api_calls";
+} from "../../config/services/userServices";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const AdminUsers = (props) => {
@@ -43,16 +43,23 @@ const AdminUsers = (props) => {
     });
   }, []);
 
-  const manageBtnHandler = (drop_id, to) => {
-    navigate(`/${to}/${drop_id}`);
+  const manageBtnHandler = (userId) => {
+    navigate(`/edituser/${userId}/adminusers/`);
   };
 
   const deleteHandler = (USERID) => {
     props.isloading(10);
+    // eslint-disable-next-line no-restricted-globals
+    if(confirm("Are you sure you want to delete this user?") === true){
     delete_user(USERID).then((res) => {
       console.log(res.data);
       if (res.success && res.data) {
         setsnak({ severity: "success", message: res.data.message, open: true });
+        setUsers(
+          users.filter((value) => {
+            return value._id !== USERID;
+          })
+        )
       } else {
         setsnak({
           open: true,
@@ -61,7 +68,7 @@ const AdminUsers = (props) => {
         });
         console.log(res.error);
       }
-    });
+    });}
     props.isloading(100);
   };
 
@@ -70,6 +77,15 @@ const AdminUsers = (props) => {
     deactivate_user(USERID).then((res) => {
       if (res.success && res.data) {
         setsnak({ severity: "success", message: res.data.message, open: true });
+        var index = users.findIndex(
+          (item) => item._id === USERID
+        );
+        var newArr = [...users];
+        newArr[index] = {
+          ...users[index],
+          'is_active': res.data.userToDeactivate.is_active,
+        };
+        setUsers(newArr);
       } else {
         setsnak({
           severity: "error",
@@ -123,7 +139,7 @@ const AdminUsers = (props) => {
     { field: "createdAt", headerName: "Created At" },
     {
       field: "_id",
-      headerName: "ID",
+      headerName: "Manage",
       flex: 1,
       renderCell: (params) => {
         return (
@@ -133,14 +149,9 @@ const AdminUsers = (props) => {
             alignItems="center"
             gap="10px"
           >
-            <SimpleSnackbar
-              open={snak.open}
-              severity={snak.severity}
-              message={snak.message}
-              onClose={handleClose}
-            />
+            
             <Button
-              onClick={() => manageBtnHandler(params.row._id, "edituser")}
+              onClick={() => manageBtnHandler(params.row._id)}
               color="secondary"
               variant="outlined"
             >
@@ -148,10 +159,10 @@ const AdminUsers = (props) => {
             </Button>
             <Button
               onClick={() => deactivateHandler(params.row._id)}
-              color="secondary"
+              color={params.row.is_active ? "warning" : "secondary"}
               variant="outlined"
             >
-              Deactivate
+              {params.row.is_active ? "Suspend" : "activate"}
             </Button>
             <Button
               onClick={() => deleteHandler(params.row._id)}
@@ -168,6 +179,12 @@ const AdminUsers = (props) => {
 
   return (
     <Box m="20px">
+      <SimpleSnackbar
+              open={snak.open}
+              severity={snak.severity}
+              message={snak.message}
+              onClose={handleClose}
+            />
       <Header title="Admin Users" subtitle="Manage And Update Admins" />
 
       <Box width="100%">

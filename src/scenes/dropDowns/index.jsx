@@ -8,7 +8,7 @@ import SimpleSnackbar from "../global/snackbar";
 import {
   fetchdropdowns,
   delete_dropdown,
-} from "../../config/services/api_calls";
+} from "../../config/services/dropdownServices";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Dropdowns = (props) => {

@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
-import { login_with_otp } from "../../config/services/api_calls";
+import { login_with_otp } from "../../config/services/userServices";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import SimpleSnackbar from "../global/snackbar";

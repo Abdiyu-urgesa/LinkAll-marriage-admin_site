@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
-import { add_dropdown_field } from "../../config/services/api_calls";
+import { add_dropdown_field } from "../../config/services/dropdownServices";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import SimpleSnackbar from "../global/snackbar";

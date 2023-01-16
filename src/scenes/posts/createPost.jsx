@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import {
   Box,
   Button,
@@ -16,7 +17,7 @@ import {
   get_tags,
   get_catagory,
   create_post,
-} from "../../config/services/api_calls";
+} from "../../config/services/postServices";
 import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import SimpleSnackbar from "../global/snackbar";
@@ -275,6 +276,9 @@ const CreatPost = (props) => {
                     setFile(event.target.files[0]);
                   }}
                 />
+              </Button>
+              <Button onClick={()=>navigate("/posts")} type="button" color="error" variant="contained">
+                Cancel
               </Button>
               <Button type="submit" color="secondary" variant="contained">
                 submit

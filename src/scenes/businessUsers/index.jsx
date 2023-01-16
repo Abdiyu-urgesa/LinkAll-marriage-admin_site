@@ -10,11 +10,13 @@ import {
   get_all_business_users,
   deactivate_user,
   delete_user,
-} from "../../config/services/api_calls";
+} from "../../config/services/userServices";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SimpleSnackbar from "../global/snackbar";
-const Business = (props) => {
+
+
+const BusinessUsers = (props) => {
   // variable definations
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
@@ -25,6 +27,7 @@ const Business = (props) => {
     message: "",
     open: false,
   });
+
   // functions
   useEffect(() => {
     get_all_business_users().then((res) => {
@@ -35,6 +38,7 @@ const Business = (props) => {
       }
     });
   }, []);
+
   const handleClose = () => {
     setsnak({
       open: false,
@@ -43,16 +47,23 @@ const Business = (props) => {
     });
   };
 
-  const manageBtnHandler = (drop_id, to) => {
-    navigate(`/${to}/${drop_id}`);
+  const editHandler = (userId) => {
+    navigate(`/edituser/${userId}/businessusers/`);
   };
 
-  const deleteHandler = (USERID) => {
+  const deleteHandler = (id) => {
     props.isloading(10);
-    delete_user(USERID).then((res) => {
-      console.log(res.data);
+    // eslint-disable-next-line no-restricted-globals
+    if(confirm("Are you sure you want to delete this user?") === true){
+    delete_user(id).then((res) => {
+
       if (res.success && res.data) {
         setsnak({ severity: "success", message: res.data.message, open: true });
+        setUsers(
+          users.filter((value) => {
+            return value._id !== id;
+          })
+        )
       } else {
         setsnak({
           severity: "error",
@@ -61,15 +72,24 @@ const Business = (props) => {
         });
         console.log(res.error);
       }
-    });
+    });}
     props.isloading(100);
   };
 
-  const deactivateHandler = (USERID) => {
+  const deactivateHandler = (userid) => {
     props.isloading(10);
-    deactivate_user(USERID).then((res) => {
+    deactivate_user(userid).then((res) => {
       if (res.success && res.data) {
         setsnak({ severity: "success", message: res.data.message, open: true });
+        var index = users.findIndex(
+          (item) => item._id === userid
+        );
+        var newArr = [...users];
+        newArr[index] = {
+          ...users[index],
+          'is_active': res.data.userToDeactivate.is_active,
+        };
+        setUsers(newArr);
       } else {
         setsnak({
           severity: "error",
@@ -135,7 +155,7 @@ const Business = (props) => {
             gap="10px"
           >
             <Button
-              onClick={() => manageBtnHandler(params.row._id, "edituser")}
+              onClick={() => editHandler(params.row._id)}
               color="secondary"
               variant="outlined"
             >
@@ -143,10 +163,10 @@ const Business = (props) => {
             </Button>
             <Button
               onClick={() => deactivateHandler(params.row._id)}
-              color="secondary"
+              color={params.row.is_active ? "warning" : "secondary"}
               variant="outlined"
             >
-              Deactivate
+              {params.row.is_active ? "Suspend" : "Activate"}
             </Button>
             <Button
               onClick={() => deleteHandler(params.row._id)}
@@ -237,4 +257,4 @@ const Business = (props) => {
   );
 };
 
-export default Business;
+export default BusinessUsers;

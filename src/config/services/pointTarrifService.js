@@ -1,26 +1,34 @@
-import api from "../api/api";
+import { axiosinstance  as api } from "../api/apiHelpers";
 
+/** 
+ * Api Services for Point Charge Amount Apis
+ * 
+ * as the names are descriptive 
+ * the service fundctions are for 
+ * create,update,get all ,get byid and delete for Charge Amounts.
+ * 
 
-export const create_point = async (formdata) => {
+*/
+
+export const createActivityTarrif = async (formdata) => {
     try {
-      const response = await api.post("/api/points/create", formdata);
+      const response = await api.post("/api/points/create-charge-fee/", formdata);
   
       return { success: true, data: response.data };
     } catch (err) {
       if (err.response) {
-        console.log(err.response.data);
-        return { success: false, data: null, error: err.message };
+        console.log("in err response: ",err.response.data);
+        return { success: false, data: null, error: err.response.data.message };
       } else {
         console.log(`Error: ${err.message}`);
+        return { success: false, data: null, error: err.message };
       }
     }
   };
   
-
-
-export const fetchPaymentAccounts = async () => {
+export const fetchActivityTarrifs = async () => {
     try {
-      const response = await api.get("/api/payment/all/");
+      const response = await api.get("/api/points/all-charge-fees/");
       return { success: true, data: response.data };
     } catch (err) {
       if (err.response) {
@@ -32,9 +40,9 @@ export const fetchPaymentAccounts = async () => {
     }
   };
 
-  export const get_points_byid = async (point_id) => {
+  export const fetchActivityTarrif = async (id) => {
     try {
-      const response = await api.get(`/api/points/get-point/${point_id}`);
+      const response = await api.get(`/api/points/get-charge-fee/${id}`);
       return { success: true, data: response.data };
     } catch (err) {
       if (err.response) {
@@ -46,26 +54,24 @@ export const fetchPaymentAccounts = async () => {
     }
   };
 
-export const delete_paymentAccount = async (accountId) => {
+export const deleteActivityTarrif = async (id) => {
     try {
-      const response = await api.delete(`/api/payment/delete/${accountId}`);
+      const response = await api.delete(`/api/points/delete-charge-fee/${id}`);
       return { success: true, data: response.data };
     } catch (err) {
       if (err.response) {
         console.log(err.response.data);
-        return { success: false, data: null, error: err.message };
+        return { success: false, data: null, error: err.response.data.message };
       } else {
         console.log(`Error: ${err.message}`);
+        return {success:false,data:null,error:err.message}
       }
     }
   };
-
   
-export const update_point = async (point,point_id) => {
+export const updateActivityTarrif = async (formData,id) => {
   try {
-    const response = await api.put(`/api/points/update/${point_id}`, {
-      point: point
-    });
+    const response = await api.put(`/api/points/update-charge-fee/${id}`, formData);
     return { success: true, data: response.data };
   } catch (err) {
     if (err.response) {
@@ -76,3 +82,4 @@ export const update_point = async (point,point_id) => {
     }
   }
 };
+ 

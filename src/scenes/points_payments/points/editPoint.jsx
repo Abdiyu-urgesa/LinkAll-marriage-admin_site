@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
-import { updatePointAmount } from "../../../config/services/point_service";
+import { updatePointAmount } from "../../../config/services/pointService";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
@@ -102,9 +102,20 @@ const EditPoint = () => {
                 error={!!touched.point && !!errors.point}
                 helperText={touched.point && errors.point}
               />
-              <Button type="submit" color="secondary" variant="contained">
-                submit
-              </Button>
+             <Box m="10px"
+                  gap="40px"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center">
+
+                  
+                  <Button type="button" onClick={()=>navigate("/points")} m="10px" sx={{  width: "30%", height:"40px" }} color="error" variant="contained">
+                      Cancel
+                    </Button>
+                    <Button type="submit" m="10px" sx={{  width: "30%", height:"40px" }} color="secondary" variant="contained">
+                      Submit
+                    </Button>
+                </Box>
             </Box>
           </Form>
          )}

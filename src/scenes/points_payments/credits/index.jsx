@@ -4,7 +4,7 @@ import { tokens } from "../../../theme";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import Header from "../../../components/Header";
 import { useEffect } from "react";
-import { deleteCreditPackage, fetchCreditPackages } from "../../../config/services/point_service";
+import { deleteCreditPackage, fetchCreditPackages } from "../../../config/services/pointService";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SimpleSnackbar from "../../global/snackbar";
@@ -40,7 +40,7 @@ const CreditPackage = (props) => {
     });
   };
   const editHandler = (id) => {
-    navigate(`/update-credit/${id}/`);
+    navigate(`/update-credit-package/${id}/`);
   };
 
   const deleteHandler = (id) => {

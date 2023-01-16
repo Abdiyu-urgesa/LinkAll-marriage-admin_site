@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
-import { create_admin } from "../../config/services/api_calls";
+import { create_admin } from "../../config/services/userServices";
 import { useNavigate } from "react-router-dom";
 import SimpleSnackbar from "../global/snackbar";
 import { useState } from "react";
@@ -31,7 +31,7 @@ const CreateAdminUser = (props) => {
             open: true,
           });
 
-          navigate("/businessusers");
+          navigate("/adminusers");
         } else {
           setsnak({
             open: true,

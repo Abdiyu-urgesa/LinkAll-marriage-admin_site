@@ -8,7 +8,7 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import {
   createCreditPackage,
-} from "../../../config/services/point_service";
+} from "../../../config/services/pointService";
 import Header from "../../../components/Header";
 import { useState } from "react";
 import SimpleSnackbar from "../../global/snackbar";
@@ -63,7 +63,7 @@ const CreateCreditpackage = (props) => {
 
   return (
     <Box
-    m="20vh auto"
+    m="5vh auto"
     width="500px"
     display="flex"
     flexDirection="column"
@@ -131,10 +131,20 @@ const CreateCreditpackage = (props) => {
                 helperText={touched.cost_in_usd && errors.cost_in_usd}
               />
                
-               
-              <Button type="submit" color="secondary" variant="contained">
-                submit
-              </Button>
+               <Box m="10px"
+                  gap="40px"
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center">
+
+                  
+                  <Button type="button" onClick={()=>navigate("/credit-packages")} m="10px" sx={{  width: "30%", height:"40px" }} color="error" variant="contained">
+                      Cancel
+                    </Button>
+                    <Button type="submit" m="10px" sx={{  width: "30%", height:"40px" }} color="secondary" variant="contained">
+                      Submit
+                    </Button>
+                </Box>
             </Box>
           </Form>
         )}
