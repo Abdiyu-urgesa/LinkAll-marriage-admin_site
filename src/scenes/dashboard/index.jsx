@@ -9,11 +9,13 @@ import Header from "../../components/Header";
 import LineChart from "../../components/LineChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
-
+import { useContext } from "react";
+import SocketContext from "../../config/api/socketHelpers";
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
+  const socketctx = useContext(SocketContext);
+  console.log(socketctx.socket);
   return (
     <Box m="20px">
       {/* HEADER */}

@@ -61,6 +61,7 @@ import CreatePaymentAccount from "./scenes/points_payments/payments/create";
 import UpdatePaymentAccount from "./scenes/points_payments/payments/update";
 import CreditPayments from "./scenes/points_payments/payments/payment_info";
 import PrivateRoutes from "./config/store/PrivateRoutes";
+import { SocketContextProvider } from "./config/api/socketHelpers";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -92,221 +93,229 @@ function App() {
             {showside && authCtx.isLoggedIn && (
               <Topbar setIsSidebar={setIsSidebar} />
             )}
+            <SocketContextProvider>
+              <Routes>
+                <Route path="/" element={<SignIn isloading={setProgress} />} />
+                <Route
+                  path="/otp/:id"
+                  element={<OtpLogin isloading={setProgress} />}
+                />
+                {/* all routes under this private route require login */}
 
-            <Routes>
-              <Route path="/" element={<SignIn isloading={setProgress} />} />
-              <Route
-                path="/otp/:id"
-                element={<OtpLogin isloading={setProgress} />}
-              />
-              <Route element={<PrivateRoutes />}>
-                <Route
-                  path="/dashboard"
-                  element={<Dashboard isloading={setProgress} />}
-                />
-                <Route
-                  path="/users"
-                  element={<AppUsers isloading={setProgress} />}
-                />
-                <Route
-                  path="/businessusers"
-                  element={<BusinessUsers isloading={setProgress} />}
-                />
-                <Route
-                  path="/createbusiness"
-                  element={<CreateBusinessUser isloading={setProgress} />}
-                />
-                <Route
-                  path="/createadmin"
-                  element={<CreateAdminUser isloading={setProgress} />}
-                />
-                <Route
-                  path="/adminusers"
-                  element={<AdminUsers isloading={setProgress} />}
-                />
-                <Route
-                  path="/edituser/:id/:next"
-                  element={<EditUser isloading={setProgress} />}
-                />
+                <Route element={<PrivateRoutes />}>
+                  <Route
+                    path="/dashboard"
+                    element={<Dashboard isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/users"
+                    element={<AppUsers isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/businessusers"
+                    element={<BusinessUsers isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/createbusiness"
+                    element={<CreateBusinessUser isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/createadmin"
+                    element={<CreateAdminUser isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/adminusers"
+                    element={<AdminUsers isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/edituser/:id/:next"
+                    element={<EditUser isloading={setProgress} />}
+                  />
 
-                <Route
-                  path="/posts"
-                  element={<Posts isloading={setProgress} />}
-                />
-                <Route
-                  path="/createposts"
-                  element={<CreatPost isloading={setProgress} />}
-                />
-                <Route
-                  path="/editpost/:id"
-                  element={<EditPost isloading={setProgress} />}
-                />
-                <Route
-                  path="/catagories"
-                  element={<Catagories isloading={setProgress} />}
-                />
-                <Route
-                  path="/createcatagory"
-                  element={<CreatCatagory isloading={setProgress} />}
-                />
-                <Route
-                  path="/editcatagory/:id"
-                  element={<EditCatagory isloading={setProgress} />}
-                />
-                <Route
-                  path="/tags"
-                  element={<Tags isloading={setProgress} />}
-                />
-                <Route
-                  path="/creattags"
-                  element={<CreatTag isloading={setProgress} />}
-                />
-                <Route
-                  path="/edittag/:id"
-                  element={<EditTag isloading={setProgress} />}
-                />
+                  <Route
+                    path="/posts"
+                    element={<Posts isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/createposts"
+                    element={<CreatPost isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/editpost/:id"
+                    element={<EditPost isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/catagories"
+                    element={<Catagories isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/createcatagory"
+                    element={<CreatCatagory isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/editcatagory/:id"
+                    element={<EditCatagory isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/tags"
+                    element={<Tags isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/creattags"
+                    element={<CreatTag isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/edittag/:id"
+                    element={<EditTag isloading={setProgress} />}
+                  />
 
-                <Route
-                  path="/dropdowns"
-                  element={<Dropdowns isloading={setProgress} />}
-                />
-                <Route
-                  path="/addDropdown"
-                  element={<AddDropdown isloading={setProgress} />}
-                />
-                <Route
-                  path="/editdropdown/:id"
-                  element={<EditDropdown isloading={setProgress} />}
-                />
-                <Route
-                  path="/addfield/:id"
-                  element={<AddField isloading={setProgress} />}
-                />
+                  <Route
+                    path="/dropdowns"
+                    element={<Dropdowns isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/addDropdown"
+                    element={<AddDropdown isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/editdropdown/:id"
+                    element={<EditDropdown isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/addfield/:id"
+                    element={<AddField isloading={setProgress} />}
+                  />
 
-                <Route path="/bar" element={<Bar isloading={setProgress} />} />
-                <Route
-                  path="/line"
-                  element={<Line isloading={setProgress} />}
-                />
-                <Route
-                  path="/feedback"
-                  element={<AppFeedBack isloading={setProgress} />}
-                />
-                <Route
-                  path="/abuse-report"
-                  element={<AbuseReport isloading={setProgress} />}
-                />
-                <Route
-                  path="/points"
-                  element={<Points isloading={setProgress} />}
-                />
-                <Route
-                  path="/createpoints"
-                  element={<CreatePoint isloading={setProgress} />}
-                />
-                <Route
-                  path="/updatepoints/:id/:point/:point_type/"
-                  element={<EditPoint isloading={setProgress} />}
-                />
-                <Route
-                  path="/credit-packages"
-                  element={<CreditPackage isloading={setProgress} />}
-                />
-                <Route
-                  path="/create-credit-package"
-                  element={<CreateCreditpackage isloading={setProgress} />}
-                />
-                <Route
-                  path="/update-credit-package/:id/"
-                  element={<UpdateCreditPackage isloading={setProgress} />}
-                />
-                <Route
-                  path="/company-services"
-                  element={<ServiceCompanies isloading={setProgress} />}
-                />
-                <Route
-                  path="/create-company-services"
-                  element={<CreateCompanyService isloading={setProgress} />}
-                />
-                <Route
-                  path="/update-company-services/:id/"
-                  element={<UpdateCompanyService isloading={setProgress} />}
-                />
-                <Route
-                  path="/custom-ads"
-                  element={<CustomAds isloading={setProgress} />}
-                />
-                <Route
-                  path="/create-ads"
-                  element={<CreateCustomAd isloading={setProgress} />}
-                />
-                <Route
-                  path="/update-ads/:id/"
-                  element={<UpdateAd isloading={setProgress} />}
-                />
-                <Route
-                  path="/activity-tarrifs"
-                  element={<ChatActivityTarrif isloading={setProgress} />}
-                />
-                <Route
-                  path="/create-activity-tarrifs"
-                  element={<CreateActivityTarrif isloading={setProgress} />}
-                />
-                <Route
-                  path="/update-activity-tarrif/:id/:tarrif/:action_type/"
-                  element={<UpdateChatActivityTarrif isloading={setProgress} />}
-                />
+                  <Route
+                    path="/bar"
+                    element={<Bar isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/line"
+                    element={<Line isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/feedback"
+                    element={<AppFeedBack isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/abuse-report"
+                    element={<AbuseReport isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/points"
+                    element={<Points isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/createpoints"
+                    element={<CreatePoint isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/updatepoints/:id/:point/:point_type/"
+                    element={<EditPoint isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/credit-packages"
+                    element={<CreditPackage isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-credit-package"
+                    element={<CreateCreditpackage isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/update-credit-package/:id/"
+                    element={<UpdateCreditPackage isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/company-services"
+                    element={<ServiceCompanies isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-company-services"
+                    element={<CreateCompanyService isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/update-company-services/:id/"
+                    element={<UpdateCompanyService isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/custom-ads"
+                    element={<CustomAds isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-ads"
+                    element={<CreateCustomAd isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/update-ads/:id/"
+                    element={<UpdateAd isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/activity-tarrifs"
+                    element={<ChatActivityTarrif isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-activity-tarrifs"
+                    element={<CreateActivityTarrif isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/update-activity-tarrif/:id/:tarrif/:action_type/"
+                    element={
+                      <UpdateChatActivityTarrif isloading={setProgress} />
+                    }
+                  />
 
-                <Route
-                  path="/quizes"
-                  element={<QuizeList isloading={setProgress} />}
-                />
-                <Route
-                  path="/create-quize"
-                  element={<CreateQuizes isloading={setProgress} />}
-                />
-                <Route
-                  path="/quize-detail/:id/"
-                  element={<UpdateQuize isloading={setProgress} />}
-                />
-                <Route
-                  path="/create-possibleAnswers/:id/"
-                  element={<PossibleQuizeAnswers isloading={setProgress} />}
-                />
-                <Route
-                  path="/chat-text-list"
-                  element={<ChatTextList isloading={setProgress} />}
-                />
-                <Route
-                  path="/create-chat-text-list"
-                  element={<CreateChatTextList isloading={setProgress} />}
-                />
-                <Route
-                  path="/edit-chat-text-list/:id/"
-                  element={<UpdateChatTextList isloading={setProgress} />}
-                />
-                <Route
-                  path="/chat-text/:id/"
-                  element={<ChatTextDetail isloading={setProgress} />}
-                />
-                <Route
-                  path="/payment-accounts"
-                  element={<PaymentAccount isloading={setProgress} />}
-                />
-                <Route
-                  path="/create-payment-accounts"
-                  element={<CreatePaymentAccount isloading={setProgress} />}
-                />
-                <Route
-                  path="/update-payment-account/:id/"
-                  element={<UpdatePaymentAccount isloading={setProgress} />}
-                />
-                <Route
-                  path="/credit-payment/:status/"
-                  element={<CreditPayments isloading={setProgress} />}
-                />
-              </Route>
-            </Routes>
+                  <Route
+                    path="/quizes"
+                    element={<QuizeList isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-quize"
+                    element={<CreateQuizes isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/quize-detail/:id/"
+                    element={<UpdateQuize isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-possibleAnswers/:id/"
+                    element={<PossibleQuizeAnswers isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/chat-text-list"
+                    element={<ChatTextList isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-chat-text-list"
+                    element={<CreateChatTextList isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/edit-chat-text-list/:id/"
+                    element={<UpdateChatTextList isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/chat-text/:id/"
+                    element={<ChatTextDetail isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/payment-accounts"
+                    element={<PaymentAccount isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/create-payment-accounts"
+                    element={<CreatePaymentAccount isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/update-payment-account/:id/"
+                    element={<UpdatePaymentAccount isloading={setProgress} />}
+                  />
+                  <Route
+                    path="/credit-payment/:status/"
+                    element={<CreditPayments isloading={setProgress} />}
+                  />
+                </Route>
+              </Routes>
+            </SocketContextProvider>
           </main>
         </div>
       </ThemeProvider>
